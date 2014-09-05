@@ -116,7 +116,7 @@ public class JavaBeansUtil {
                     sb.append(Character.toUpperCase(c));
                     nextUpperCase = false;
                 } else {
-                    sb.append(c);
+                    sb.append(Character.toLowerCase(c));
                 }
                 break;
             }
