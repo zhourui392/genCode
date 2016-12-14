@@ -26,15 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.mybatis.generator.config.Context;
-import org.mybatis.generator.config.GeneratedKey;
-import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
-import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
-import org.mybatis.generator.config.ModelType;
-import org.mybatis.generator.config.PropertyHolder;
-import org.mybatis.generator.config.PropertyRegistry;
-import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
-import org.mybatis.generator.config.TableConfiguration;
+import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.rules.ConditionalModelRules;
 import org.mybatis.generator.internal.rules.FlatModelRules;
 import org.mybatis.generator.internal.rules.HierarchicalModelRules;
@@ -67,6 +59,7 @@ public abstract class IntrospectedTable {
         ATTR_MYBATIS3_XML_MAPPER_FILE_NAME,
         /** also used as XML Mapper namespace if a Java mapper is generated */
         ATTR_MYBATIS3_JAVA_MAPPER_TYPE,
+        ATTR_MYBATIS3_JAVA_SERVICE_TYPE,
         /** used as XML Mapper namespace if no client is generated */
         ATTR_MYBATIS3_FALLBACK_SQL_MAP_NAMESPACE,
         ATTR_FULLY_QUALIFIED_TABLE_NAME_AT_RUNTIME,
@@ -489,6 +482,8 @@ public abstract class IntrospectedTable {
         calculateModelAttributes();
         calculateXmlAttributes();
 
+        calculateServiceAttributes();
+
         if (tableConfiguration.getModelType() == ModelType.HIERARCHICAL) {
             rules = new HierarchicalModelRules(this);
         } else if (tableConfiguration.getModelType() == ModelType.FLAT) {
@@ -499,6 +494,8 @@ public abstract class IntrospectedTable {
 
         context.getPlugins().initialized(this);
     }
+
+
 
     /**
      * 
@@ -870,6 +867,27 @@ public abstract class IntrospectedTable {
         setExampleType(sb.toString());
     }
 
+    protected String calculateJavaServicePackage() {
+        JavaServiceGeneratorConfiguration config = context
+                .getJavaServiceGeneratorConfiguration();
+        StringBuilder sb = new StringBuilder();
+        sb.append(config.getTargetPackage());
+        sb.append(fullyQualifiedTable.getSubPackage(isSubPackagesEnabled(config)));
+        return sb.toString();
+    }
+
+
+    protected void calculateServiceAttributes() {
+        StringBuilder sb = new StringBuilder();
+        sb.setLength(0);
+        sb.append(calculateJavaServicePackage());
+        sb.append('.');
+        sb.append(fullyQualifiedTable.getDomainObjectName());
+        sb.append("Service"); //$NON-NLS-1$
+        setMyBatis3JavaServiceType(sb.toString());
+    }
+
+
     protected String calculateSqlMapPackage() {
         StringBuilder sb = new StringBuilder();
         SqlMapGeneratorConfiguration config = context
@@ -1089,6 +1107,15 @@ public abstract class IntrospectedTable {
         internalAttributes.put(
                 InternalAttribute.ATTR_MYBATIS3_JAVA_MAPPER_TYPE,
                 mybatis3JavaMapperType);
+    }
+    public String getMyBatis3JavaServiceType() {
+        return internalAttributes
+                .get(InternalAttribute.ATTR_MYBATIS3_JAVA_SERVICE_TYPE);
+    }
+    public void setMyBatis3JavaServiceType(String mybatis3JavaServiceType) {
+        internalAttributes.put(
+                InternalAttribute.ATTR_MYBATIS3_JAVA_SERVICE_TYPE,
+                mybatis3JavaServiceType);
     }
 
     public String getMyBatis3SqlProviderType() {

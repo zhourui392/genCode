@@ -22,6 +22,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
+import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.AbstractXmlGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.*;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.XMLMapperGenerator;
@@ -33,230 +34,70 @@ import java.util.List;
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
-/**
- * @author Jeff Butler
- * 
- */
-public class JavaServiceGenerator extends AbstractJavaClientGenerator {
+public class JavaServiceGenerator extends AbstractJavaGenerator {
 
-    /**
-     *
-     */
     public JavaServiceGenerator() {
-        super(true);
+        super();
     }
 
-    public JavaServiceGenerator(boolean requiresMatchedXMLGenerator) {
-        super(requiresMatchedXMLGenerator);
-    }
-    
     @Override
     public List<CompilationUnit> getCompilationUnits() {
         progressCallback.startTask(getString("Progress.17", //$NON-NLS-1$
                 introspectedTable.getFullyQualifiedTable().toString()));
         CommentGenerator commentGenerator = context.getCommentGenerator();
 
-        String myBatis3JavaMapperType = introspectedTable.getMyBatis3JavaMapperType();
-        
-        Interface interfaze = interfaceout(commentGenerator,
-				myBatis3JavaMapperType);
+        String myBatis3JavaMapperType = introspectedTable.getMyBatis3JavaServiceType();
                 
         List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
-        
+
+        //生成接口
+        Interface interfaze = interfaceout(commentGenerator,
+                myBatis3JavaMapperType);
         if (context.getPlugins().clientGenerated(interfaze, null,
                 introspectedTable)) {
             answer.add(interfaze);
         }
-        
-        List<CompilationUnit> extraCompilationUnits = getExtraCompilationUnits();
-        if (extraCompilationUnits != null) {
-            answer.addAll(extraCompilationUnits);
-        }
-        
-        
-		Interface interfaze2 = interfacebase(commentGenerator, myBatis3JavaMapperType);
 
-        if (context.getPlugins().clientGenerated(interfaze2, null,
-                introspectedTable)) {
-            answer.add(interfaze2);
-        }
-        
-        List<CompilationUnit> extraCompilationUnits2 = getExtraCompilationUnits();
-        if (extraCompilationUnits2 != null) {
-            answer.addAll(extraCompilationUnits2);
-        }
+        //生成实现类
 
         return answer;
     }
 
 	private Interface interfaceout(CommentGenerator commentGenerator,
 			String myBatis3JavaMapperType) {
-		FullyQualifiedJavaType type = new FullyQualifiedJavaType(
-        		myBatis3JavaMapperType);
-        Interface interfaze = new Interface(type);
-        interfaze.setVisibility(JavaVisibility.PUBLIC);
-        commentGenerator.addJavaFileComment(interfaze);
-
-        String rootInterface = introspectedTable
-            .getTableConfigurationProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
-        if (!stringHasValue(rootInterface)) {
-            rootInterface = context.getJavaClientGeneratorConfiguration()
-                .getProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
-        }
-
         String cc = myBatis3JavaMapperType.substring(0, myBatis3JavaMapperType.lastIndexOf("."));
-		String bb = myBatis3JavaMapperType.substring(myBatis3JavaMapperType.lastIndexOf(".")+1,myBatis3JavaMapperType.length());
-		
-		String myBatis3JavaMapperTypeParent = cc+".service.Base"+bb;
-        rootInterface =  myBatis3JavaMapperTypeParent;
-        if (stringHasValue(rootInterface)) {
-            FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
-                    rootInterface);
-            interfaze.addSuperInterface(fqjt);
-            interfaze.addImportedType(fqjt);
-        }
-		return interfaze;
-	}
+        String bb = myBatis3JavaMapperType.substring(myBatis3JavaMapperType.lastIndexOf(".")+1,myBatis3JavaMapperType.length());
 
-	private Interface interfacebase(CommentGenerator commentGenerator,
-			String myBatis3JavaMapperType) {
-		String cc = myBatis3JavaMapperType.substring(0, myBatis3JavaMapperType.lastIndexOf("."));
-		String bb = myBatis3JavaMapperType.substring(myBatis3JavaMapperType.lastIndexOf(".")+1,myBatis3JavaMapperType.length());
-		
-		String myBatis3JavaMapperTypeDone = cc+".service.Base"+bb;
+        String myBatis3JavaMapperTypeDone = cc+"."+bb;
         FullyQualifiedJavaType type = new FullyQualifiedJavaType(
-        		myBatis3JavaMapperTypeDone);
+                myBatis3JavaMapperTypeDone);
         Interface interfaze = new Interface(type);
         interfaze.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(interfaze);
 
         String rootInterface = introspectedTable
-            .getTableConfigurationProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
+                .getTableConfigurationProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
         if (!stringHasValue(rootInterface)) {
             rootInterface = context.getJavaClientGeneratorConfiguration()
-                .getProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
+                    .getProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
         }
 
-        rootInterface =cc+".service.BaseMapper<"+type.getShortName().replace("Mapper", "").replace("Base", "")+">";
+        rootInterface =cc+".BaseService<"+type.getShortName().replace("Service", "").replace("Base", "")+">";
         if (stringHasValue(rootInterface)) {
             FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
                     rootInterface);
             interfaze.addSuperInterface(fqjt);
             interfaze.addImportedType(fqjt);
         }
-        
+
         addCountByExampleMethod(interfaze);
-        addDeleteByExampleMethod(interfaze);
-        addDeleteByPrimaryKeyMethod(interfaze);
-        addInsertMethod(interfaze);
-        addInsertSelectiveMethod(interfaze);
-        addSelectByExampleWithBLOBsMethod(interfaze);
-        addSelectByExampleWithoutBLOBsMethod(interfaze);
-        addSelectByPrimaryKeyMethod(interfaze);
-        addUpdateByExampleSelectiveMethod(interfaze);
-        addUpdateByExampleWithBLOBsMethod(interfaze);
-        addUpdateByExampleWithoutBLOBsMethod(interfaze);
-        addUpdateByPrimaryKeySelectiveMethod(interfaze);
-        addUpdateByPrimaryKeyWithBLOBsMethod(interfaze);
-        addUpdateByPrimaryKeyWithoutBLOBsMethod(interfaze);
-		return interfaze;
+        return interfaze;
 	}
+
 
     protected void addCountByExampleMethod(Interface interfaze) {
         if (introspectedTable.getRules().generateCountByExample()) {
             AbstractJavaMapperMethodGenerator methodGenerator = new CountByExampleMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addDeleteByExampleMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateDeleteByExample()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new DeleteByExampleMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addDeleteByPrimaryKeyMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateDeleteByPrimaryKey()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new DeleteByPrimaryKeyMethodGenerator(false);
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addInsertMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateInsert()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new InsertMethodGenerator(false);
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addInsertSelectiveMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateInsertSelective()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new InsertSelectiveMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addSelectByExampleWithBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateSelectByExampleWithBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new SelectByExampleWithBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addSelectByExampleWithoutBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateSelectByExampleWithoutBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new SelectByExampleWithoutBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addSelectByPrimaryKeyMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateSelectByPrimaryKey()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new SelectByPrimaryKeyMethodGenerator(false);
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByExampleSelectiveMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByExampleSelective()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByExampleSelectiveMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByExampleWithBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByExampleWithBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByExampleWithBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByExampleWithoutBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByExampleWithoutBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByExampleWithoutBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByPrimaryKeySelectiveMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByPrimaryKeySelective()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByPrimaryKeySelectiveMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByPrimaryKeyWithBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByPrimaryKeyWithBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByPrimaryKeyWithBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByPrimaryKeyWithoutBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules()
-                .generateUpdateByPrimaryKeyWithoutBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByPrimaryKeyWithoutBLOBsMethodGenerator();
             initializeAndExecuteGenerator(methodGenerator, interfaze);
         }
     }
@@ -271,12 +112,4 @@ public class JavaServiceGenerator extends AbstractJavaClientGenerator {
         methodGenerator.addInterfaceElements(interfaze);
     }
 
-    public List<CompilationUnit> getExtraCompilationUnits() {
-        return null;
-    }
-
-    @Override
-    public AbstractXmlGenerator getMatchedXMLGenerator() {
-        return new XMLMapperGenerator();
-    }
 }

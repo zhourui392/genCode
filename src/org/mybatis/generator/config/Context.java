@@ -212,6 +212,11 @@ public class Context extends PropertyHolder {
             JavaModelGeneratorConfiguration javaModelGeneratorConfiguration) {
         this.javaModelGeneratorConfiguration = javaModelGeneratorConfiguration;
     }
+    public void setJavaServiceGeneratorConfiguration(
+            JavaServiceGeneratorConfiguration javaServicelGeneratorConfiguration) {
+        this.javaServicelGeneratorConfiguration = javaServicelGeneratorConfiguration;
+    }
+
 
     public void setJavaTypeResolverConfiguration(
             JavaTypeResolverConfiguration javaTypeResolverConfiguration) {

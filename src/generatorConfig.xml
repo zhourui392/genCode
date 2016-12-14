@@ -10,7 +10,7 @@
 -->
 	<!---->
 	
-	<classPathEntry location="D:/workspace/GenCode2/WebRoot/WEB-INF/lib/postgresql-9.3-1101-jdbc41.jar" />
+	<!--<classPathEntry location="D:/workspace/GenCode2/WebRoot/WEB-INF/lib/postgresql-9.3-1101-jdbc41.jar" />-->
 
 	
 	<context id="DB2Tables" targetRuntime="MyBatis3">
@@ -26,7 +26,7 @@
 		-->
 
 		<!---->
-		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/ra" userId="root" password="root">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/teleuscloud" userId="root" password="root">
 		</jdbcConnection>
 		<!--
 		<jdbcConnection driverClass="org.postgresql.Driver" connectionURL="jdbc:postgresql://127.0.0.1:5432/issgateway" userId="postgres" password="123456">
@@ -40,6 +40,11 @@
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
+
+		<javaServiceGenerator targetPackage="com.teleus.service" targetProject="src">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaServiceGenerator>
 		<!-- 生成的映射文件包名和位置 -->
 		<sqlMapGenerator targetPackage="com.teleus.dao" targetProject="src">
 			<property name="enableSubPackages" value="true" />
