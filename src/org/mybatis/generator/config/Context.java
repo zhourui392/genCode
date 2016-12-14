@@ -58,6 +58,8 @@ public class Context extends PropertyHolder {
 
     private JavaClientGeneratorConfiguration javaClientGeneratorConfiguration;
 
+    private JavaServiceGeneratorConfiguration javaServicelGeneratorConfiguration;
+
     private ArrayList<TableConfiguration> tableConfigurations;
 
     private ModelType defaultModelType;
@@ -117,6 +119,10 @@ public class Context extends PropertyHolder {
 
     public JavaModelGeneratorConfiguration getJavaModelGeneratorConfiguration() {
         return javaModelGeneratorConfiguration;
+    }
+
+    public JavaServiceGeneratorConfiguration getJavaServiceGeneratorConfiguration() {
+        return javaServicelGeneratorConfiguration;
     }
 
     public JavaTypeResolverConfiguration getJavaTypeResolverConfiguration() {
@@ -544,4 +550,5 @@ public class Context extends PropertyHolder {
         return autoDelimitKeywords != null
                 && autoDelimitKeywords.booleanValue();
     }
+
 }
