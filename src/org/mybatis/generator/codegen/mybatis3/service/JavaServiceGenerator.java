@@ -17,10 +17,7 @@
 package org.mybatis.generator.codegen.mybatis3.service;
 
 import org.mybatis.generator.api.CommentGenerator;
-import org.mybatis.generator.api.dom.java.CompilationUnit;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Interface;
-import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.AbstractXmlGenerator;
@@ -59,8 +56,40 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         }
 
         //生成实现类
+        TopLevelClass topLevelClass = geneTopLevelClass(commentGenerator,
+                myBatis3JavaMapperType);
+
+        if (context.getPlugins().modelExampleClassGenerated(
+                topLevelClass, introspectedTable)) {
+            answer.add(topLevelClass);
+        }
+
 
         return answer;
+    }
+
+    private TopLevelClass geneTopLevelClass(CommentGenerator commentGenerator,
+                                            String myBatis3JavaMapperType){
+        String cc = myBatis3JavaMapperType.substring(0, myBatis3JavaMapperType.lastIndexOf("."));
+        String bb = myBatis3JavaMapperType.substring(myBatis3JavaMapperType.lastIndexOf(".")+1,myBatis3JavaMapperType.length());
+
+        String myBatis3JavaMapperTypeDone = cc+".impl."+bb+"Impl";
+        FullyQualifiedJavaType type = new FullyQualifiedJavaType(myBatis3JavaMapperTypeDone);
+
+        TopLevelClass topLevelClass = new TopLevelClass(type);
+        topLevelClass.setVisibility(JavaVisibility.PUBLIC);
+        commentGenerator.addJavaFileComment(topLevelClass);
+
+        // add default constructor
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setConstructor(true);
+        method.setName(type.getShortName());
+        method.addBodyLine("oredCriteria = new ArrayList<Criteria>();"); //$NON-NLS-1$
+
+        commentGenerator.addGeneralMethodComment(method, introspectedTable);
+        topLevelClass.addMethod(method);
+        return topLevelClass;
     }
 
 	private Interface interfaceout(CommentGenerator commentGenerator,
@@ -91,6 +120,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         }
 
         addCountByExampleMethod(interfaze);
+
         return interfaze;
 	}
 
