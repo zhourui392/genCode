@@ -112,4 +112,14 @@ public class StringUtility {
             return sb.toString();
         }
     }
+
+    public static String upperFirstString(String s) {
+        if (Character.isUpperCase(s.charAt(0))) {
+            return s;
+        }else{
+            StringBuilder sb = new StringBuilder(s);
+            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+            return sb.toString();
+        }
+    }
 }

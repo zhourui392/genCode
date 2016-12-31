@@ -18,10 +18,7 @@ package org.mybatis.generator.codegen.mybatis3;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mybatis.generator.api.GeneratedJavaFile;
-import org.mybatis.generator.api.GeneratedXmlFile;
-import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.ProgressCallback;
+import org.mybatis.generator.api.*;
 import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.codegen.AbstractGenerator;
@@ -37,6 +34,7 @@ import org.mybatis.generator.codegen.mybatis3.model.ExampleGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.PrimaryKeyGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.RecordWithBLOBsGenerator;
 import org.mybatis.generator.codegen.mybatis3.service.JavaServiceGenerator;
+import org.mybatis.generator.codegen.mybatis3.xmlmapper.PageXMLMapperGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.XMLMapperGenerator;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.ObjectFactory;
@@ -50,6 +48,7 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
     protected List<AbstractJavaGenerator> javaModelGenerators;
     protected List<AbstractJavaGenerator> clientGenerators;
     protected AbstractXmlGenerator xmlMapperGenerator;
+    protected AbstractXmlGenerator pageXmlMapperGenerator;
 
     protected List<AbstractJavaGenerator> javaServiceGenerators;
     protected List<AbstractJavaGenerator> javaControllerGenerators;
@@ -84,12 +83,16 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
         if (javaClientGenerator == null) {
             if (context.getSqlMapGeneratorConfiguration() != null) {
                 xmlMapperGenerator = new XMLMapperGenerator();
+
             }
         } else {
             xmlMapperGenerator = javaClientGenerator.getMatchedXMLGenerator();
         }
+        pageXmlMapperGenerator = new PageXMLMapperGenerator();
         
         initializeAbstractGenerator(xmlMapperGenerator, warnings,
+                progressCallback);
+        initializeAbstractGenerator(pageXmlMapperGenerator, warnings,
                 progressCallback);
     }
 
@@ -269,11 +272,22 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
         if (xmlMapperGenerator != null) {
             Document document = xmlMapperGenerator.getDocument();
             GeneratedXmlFile gxf = new GeneratedXmlFile(document,
-                getMyBatis3XmlMapperFileName(), getMyBatis3XmlMapperPackage(),
-                context.getSqlMapGeneratorConfiguration().getTargetProject(),
-                true, context.getXmlFormatter());
+                    getMyBatis3XmlMapperFileName(), getMyBatis3XmlMapperPackage(),
+                    context.getSqlMapGeneratorConfiguration().getTargetProject(),
+                    true, context.getXmlFormatter());
             if (context.getPlugins().sqlMapGenerated(gxf, this)) {
                 answer.add(gxf);
+            }
+        }
+
+        if (pageXmlMapperGenerator != null) {
+            Document document = pageXmlMapperGenerator.getDocument();
+            GeneratedXmlFile pageGxf = new GeneratedXmlPageFile(document,
+                    getMyBatis3XmlMapperFileName(), getMyBatis3XmlMapperPackage(),
+                    context.getSqlMapGeneratorConfiguration().getTargetProject(),
+                    true, context.getXmlFormatter());
+            if (context.getPlugins().sqlMapGenerated(pageGxf, this)) {
+                answer.add(pageGxf);
             }
         }
 

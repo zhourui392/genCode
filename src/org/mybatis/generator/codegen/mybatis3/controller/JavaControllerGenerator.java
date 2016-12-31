@@ -1,6 +1,7 @@
 package org.mybatis.generator.codegen.mybatis3.controller;
 
 import org.mybatis.generator.api.CommentGenerator;
+import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.AbstractJavaMapperMethodGenerator;
@@ -27,16 +28,17 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         progressCallback.startTask(getString("Progress.17", //$NON-NLS-1$
                 introspectedTable.getFullyQualifiedTable().toString()));
         CommentGenerator commentGenerator = context.getCommentGenerator();
-
         String myBatis3JavaControllerType = introspectedTable.getMyBatis3JavaControllerType();
         String baseRecordType = introspectedTable.getBaseRecordType();
         String serviceType = introspectedTable.getMyBatis3JavaServiceType();
+
+        List<IntrospectedColumn> introspectedColumns = introspectedTable.getBaseColumns();
 
         List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
 
         //生成Controller
         TopLevelClass topLevelClass = geneTopLevelClass(commentGenerator,
-                myBatis3JavaControllerType,baseRecordType,serviceType);
+                myBatis3JavaControllerType,baseRecordType,serviceType,introspectedColumns);
 
         if (context.getPlugins().modelExampleClassGenerated(
                 topLevelClass, introspectedTable)) {
@@ -49,7 +51,8 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
     private TopLevelClass geneTopLevelClass(CommentGenerator commentGenerator,
                                             String myBatis3JavaControllerType,
-                                            String baseRecordType,String myBatis3JavaServiceType){
+                                            String baseRecordType,String myBatis3JavaServiceType,
+                                            List<IntrospectedColumn> introspectedColumns ){
         FullyQualifiedJavaType controllerType = new FullyQualifiedJavaType(myBatis3JavaControllerType);
 
         FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(baseRecordType);
@@ -93,7 +96,10 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         commentGenerator.addJavaFileComment(topLevelClass);
 
         //TODO add method
-        addGetById(commentGenerator,topLevelClass,modelType,serviceType);
+        addGetByIdMethod(commentGenerator,topLevelClass,modelType,serviceType);
+        addDeleteByIdMethod(commentGenerator,topLevelClass,modelType,serviceType);
+        addAddMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns);
+        addUpdateMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns);
 
         //add imports
         Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
@@ -117,14 +123,19 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(rootType);
         fullyQualifiedJavaTypes.add(loggerType);
         fullyQualifiedJavaTypes.add(loggerFactoryType);
+        fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getDateInstance());
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(controllerType.getPackageName().replace("controller","")+"common.util.page.PageQuery");
+        fullyQualifiedJavaTypes.add(pageQueryType);
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(controllerType.getPackageName().replace("controller","")+"common.util.page.PageResult");
+        fullyQualifiedJavaTypes.add(pageResultType);
+
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
 
         return topLevelClass;
     }
 
-    protected void addGetById(CommentGenerator commentGenerator,TopLevelClass topLevelClass,
+    protected void addGetByIdMethod(CommentGenerator commentGenerator,TopLevelClass topLevelClass,
                               FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType) {
-        // add override method
         String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
@@ -142,4 +153,122 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);
     }
+
+    protected void addDeleteByIdMethod(CommentGenerator commentGenerator,TopLevelClass topLevelClass,
+                              FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType) {
+        String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setReturnType(FullyQualifiedJavaType.getStringInstance());
+        method.setName("delete"+modelType.getShortName()+"ById");
+        Parameter parameter = new Parameter(FullyQualifiedJavaType.getIntInstance(),"id");
+        parameter.addAnnotation("@PathVariable(\"id\")");
+        method.addParameter(parameter);
+        method.addAnnotation("@ResponseBody");
+        method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"/{id}\", method= RequestMethod.DELETE)");
+        method.addBodyLine("boolean resultBoolean = "
+                + StringUtility.lowFirstString(serviceType.getShortName()) +".deleteById(id);"); //$NON-NLS-1$
+        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+
+        commentGenerator.addGeneralMethodComment(method, introspectedTable);
+        topLevelClass.addMethod(method);
+    }
+
+    protected void addAddMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
+                                FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType,
+                                List<IntrospectedColumn> introspectedColumns) {
+        String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setReturnType(FullyQualifiedJavaType.getStringInstance());
+        method.setName("add"+modelType.getShortName());
+        method.addAnnotation("@ResponseBody");
+        method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"\", method= RequestMethod.POST)");
+
+        method.addBodyLine(modelType.getShortName() + " "+lowModelShortName+" = new "+modelType.getShortName() +"();");
+        for (IntrospectedColumn introspectedColumn : introspectedColumns){
+            if (!introspectedColumn.getActualColumnName().equals("id")){
+                Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
+                parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
+                method.addParameter(parameter);
+
+                method.addBodyLine(lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
+
+            }
+        }
+        method.addBodyLine("boolean resultBoolean = "
+                + StringUtility.lowFirstString(serviceType.getShortName()) +".add("+lowModelShortName+");"); //$NON-NLS-1$
+        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+
+        commentGenerator.addGeneralMethodComment(method, introspectedTable);
+        topLevelClass.addMethod(method);
+    }
+
+    protected void addUpdateMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
+                                FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType,
+                                List<IntrospectedColumn> introspectedColumns) {
+        String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setReturnType(FullyQualifiedJavaType.getStringInstance());
+        method.setName("update"+modelType.getShortName());
+        method.addAnnotation("@ResponseBody");
+        method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"/{id}\", method= RequestMethod.POST)");
+
+        method.addBodyLine(modelType.getShortName() + " "+lowModelShortName+" = new "+modelType.getShortName() +"();");
+        for (IntrospectedColumn introspectedColumn : introspectedColumns){
+            Parameter parameter;
+            if (!introspectedColumn.getActualColumnName().equals("id")){
+                parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
+                parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
+            }else {
+                parameter = new Parameter(FullyQualifiedJavaType.getIntInstance(),"id");
+                parameter.addAnnotation("@PathVariable(\"id\")");
+            }
+            method.addParameter(parameter);
+
+            method.addBodyLine("if ("+introspectedColumn.getActualColumnName()+" != null){");
+            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
+            method.addBodyLine("}");
+        }
+        method.addBodyLine("boolean resultBoolean = "
+                + StringUtility.lowFirstString(serviceType.getShortName()) +".update("+lowModelShortName+");"); //$NON-NLS-1$
+        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+
+        commentGenerator.addGeneralMethodComment(method, introspectedTable);
+        topLevelClass.addMethod(method);
+    }
+
+    protected void addGetByPageMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
+                                   FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType) {
+        String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setReturnType(FullyQualifiedJavaType.getStringInstance());
+        method.setName("get"+modelType.getShortName()+"sByPage");
+        method.addAnnotation("@ResponseBody");
+        method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"s\", method= RequestMethod.GET)");
+
+        Parameter parameter = new Parameter(FullyQualifiedJavaType.getIntInstance(),"pageIndex");
+        parameter.addAnnotation("@RequestParam(value = \"pageIndex\", required=false)");
+        method.addParameter(parameter);
+
+        method.addBodyLine("PageQuery pageQuery = new PageQuery();");
+        method.addBodyLine("if (pageIndex != null){");
+        method.addBodyLine("pageQuery.setPageIndex(pageIndex);");
+        method.addBodyLine("}");
+        method.addBodyLine("PageResult<"+modelType.getShortName()+"> pageResult = "+serviceType.getShortName()+".get"+modelType.getShortName()+"ListByPage(pageQuery)" );
+
+        method.addBodyLine("boolean resultBoolean = "
+                + StringUtility.lowFirstString(serviceType.getShortName()) +".update("+lowModelShortName+");"); //$NON-NLS-1$
+        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+
+        commentGenerator.addGeneralMethodComment(method, introspectedTable);
+        topLevelClass.addMethod(method);
+    }
+
 }

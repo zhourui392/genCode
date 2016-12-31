@@ -135,6 +135,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);
+        addGetByPageMethodImpl(topLevelClass,implType,modelType,mapperType);
 
         //add imports
         Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
@@ -149,6 +150,11 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(baseMapperType);
         fullyQualifiedJavaTypes.add(loggerType);
         fullyQualifiedJavaTypes.add(loggerFactoryType);
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(implType.getPackageName().replace("service.impl","")+"common.util.page.PageQuery");
+        fullyQualifiedJavaTypes.add(pageQueryType);
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(implType.getPackageName().replace("service.impl","")+"common.util.page.PageResult");
+        fullyQualifiedJavaTypes.add(pageResultType);
+        fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
 
         return topLevelClass;
@@ -173,28 +179,51 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
             Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
             fullyQualifiedJavaTypes.add(fqjt);
             fullyQualifiedJavaTypes.add(modelType);
+            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageQuery");
+            fullyQualifiedJavaTypes.add(pageQueryType);
+            FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageResult");
+            fullyQualifiedJavaTypes.add(pageResultType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 
-//        addCountByExampleMethod(interfaze);
+        addGetByPageMethod(interfaze,serviceType,modelType);
 
         return interfaze;
 	}
 
 
-    protected void addCountByExampleMethod(Interface interfaze) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new CountByExampleMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
+    protected void addGetByPageMethod(Interface interfaze,FullyQualifiedJavaType serviceType,
+                                      FullyQualifiedJavaType modelType) {
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageResult<"+modelType.getShortName()+">");
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageQuery");
+        method.setReturnType(pageResultType);
+        method.setName("get"+modelType.getShortName()+"sByPage");
+        method.addParameter(new Parameter(pageQueryType, "pageQuery")); //$NON-NLS-1$
+        interfaze.addMethod(method);
     }
 
-    protected void initializeAndExecuteGenerator(
-            AbstractJavaMapperMethodGenerator methodGenerator,
-            Interface interfaze) {
-        methodGenerator.setContext(context);
-        methodGenerator.setIntrospectedTable(introspectedTable);
-        methodGenerator.setProgressCallback(progressCallback);
-        methodGenerator.setWarnings(warnings);
-        methodGenerator.addInterfaceElements(interfaze);
+    protected void addGetByPageMethodImpl(TopLevelClass topLevelClass,FullyQualifiedJavaType serviceType,
+                                      FullyQualifiedJavaType modelType,FullyQualifiedJavaType mapperType) {
+        String mapperVar = StringUtility.lowFirstString(mapperType.getShortName());
+
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageResult<"+modelType.getShortName()+">");
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageQuery");
+        method.setReturnType(pageResultType);
+        method.setName("get"+modelType.getShortName()+"sByPage");
+        method.addAnnotation("@Override");
+        method.addParameter(new Parameter(pageQueryType, "pageQuery")); //$NON-NLS-1$
+        method.addBodyLine("PageResult<"+modelType.getShortName()+"> result = new PageResult();");
+        method.addBodyLine("List<"+modelType.getShortName()+"> list = " + mapperVar + ".getListByConditions(pageQuery);");
+        method.addBodyLine("int totalCount = " + mapperVar + ".getCountByConditions();");
+        method.addBodyLine("result.setPageQuery(pageQuery);");
+        method.addBodyLine("result.setItems(list);");
+        method.addBodyLine("result.setCount(totalCount);");
+        method.addBodyLine("return result;");
+        topLevelClass.addMethod(method);
     }
 
 }

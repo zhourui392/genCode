@@ -20,13 +20,12 @@ import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.mybatis.generator.api.CommentGenerator;
-import org.mybatis.generator.api.dom.java.CompilationUnit;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Interface;
-import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
 import org.mybatis.generator.codegen.AbstractXmlGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.AbstractJavaMapperMethodGenerator;
@@ -46,6 +45,7 @@ import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByPrimar
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByPrimaryKeyWithoutBLOBsMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.XMLMapperGenerator;
 import org.mybatis.generator.config.PropertyRegistry;
+import org.mybatis.generator.internal.util.StringUtility;
 
 /**
  * @author Jeff Butler
@@ -71,9 +71,10 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         CommentGenerator commentGenerator = context.getCommentGenerator();
 
         String myBatis3JavaMapperType = introspectedTable.getMyBatis3JavaMapperType();
+        String baseRecordType = introspectedTable.getBaseRecordType();
         
         Interface interfaze = interfaceout(commentGenerator,
-				myBatis3JavaMapperType);
+				myBatis3JavaMapperType, baseRecordType);
                 
         List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
         
@@ -104,9 +105,11 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
     }
 
 	private Interface interfaceout(CommentGenerator commentGenerator,
-			String myBatis3JavaMapperType) {
+			String myBatis3JavaMapperType,String baseRecord) {
 		FullyQualifiedJavaType type = new FullyQualifiedJavaType(
         		myBatis3JavaMapperType);
+        FullyQualifiedJavaType baseRecordType = new FullyQualifiedJavaType(
+                baseRecord);
         Interface interfaze = new Interface(type);
         interfaze.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(interfaze);
@@ -127,8 +130,22 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
                     rootInterface);
             interfaze.addSuperInterface(fqjt);
-            interfaze.addImportedType(fqjt);
+            Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
+            fullyQualifiedJavaTypes.add(fqjt);
+            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(type.getPackageName().replace("mapper","")+"common.util.page.PageQuery");
+            fullyQualifiedJavaTypes.add(pageQueryType);
+            FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(type.getPackageName().replace("mapper","")+"common.util.page.PageResult");
+            fullyQualifiedJavaTypes.add(pageResultType);
+            fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
+            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param");
+            fullyQualifiedJavaTypes.add(paramType);
+            fullyQualifiedJavaTypes.add(baseRecordType);
+            interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
+
+        addGetByPageMethod(interfaze,type,baseRecordType);
+        addGetByPageCountMethod(interfaze);
+
 		return interfaze;
 	}
 
@@ -173,8 +190,30 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         addUpdateByPrimaryKeySelectiveMethod(interfaze);
         addUpdateByPrimaryKeyWithBLOBsMethod(interfaze);
         addUpdateByPrimaryKeyWithoutBLOBsMethod(interfaze);
+
 		return interfaze;
 	}
+
+    private void addGetByPageMethod(Interface interfaze,FullyQualifiedJavaType mapperType,
+                                    FullyQualifiedJavaType modelType) {
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(mapperType.getPackageName().replace("mapper","")+"common.util.page.PageQuery");
+        FullyQualifiedJavaType returnFqj = new FullyQualifiedJavaType("List<"+modelType.getShortName()+">");
+        method.setReturnType(returnFqj);
+        method.setName("getListByConditions");
+        Parameter  parameter = new Parameter(pageQueryType, "pageQuery");
+        parameter.addAnnotation("@Param(\"pageQuery\")");
+        method.addParameter(parameter);
+        interfaze.addMethod(method);
+    }
+    private void addGetByPageCountMethod(Interface interfaze) {
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setReturnType(FullyQualifiedJavaType.getIntInstance());
+        method.setName("getCountByConditions");
+        interfaze.addMethod(method);
+    }
 
     protected void addCountByExampleMethod(Interface interfaze) {
         if (introspectedTable.getRules().generateCountByExample()) {

@@ -20,7 +20,7 @@ import org.mybatis.generator.api.dom.xml.Document;
 /**
  * @author Jeff Butler
  */
-public class GeneratedXmlFile extends GeneratedFile {
+public class GeneratedXmlPageFile extends GeneratedXmlFile {
     private Document document;
 
     private String fileName;
@@ -41,10 +41,11 @@ public class GeneratedXmlFile extends GeneratedFile {
      *            true if the file can be merged by the built in XML file
      *            merger.
      */
-    public GeneratedXmlFile(Document document, String fileName,
-            String targetPackage, String targetProject, boolean isMergeable,
-            XmlFormatter xmlFormatter) {
-        super(targetProject);
+    public GeneratedXmlPageFile(Document document, String fileName,
+                                String targetPackage, String targetProject, boolean isMergeable,
+                                XmlFormatter xmlFormatter) {
+        super(document,  fileName,
+                 targetPackage,  targetProject,  isMergeable, xmlFormatter);
         this.document = document;
         this.fileName = fileName;
         this.targetPackage = targetPackage;
@@ -62,7 +63,7 @@ public class GeneratedXmlFile extends GeneratedFile {
      */
     @Override
     public String getFileName() {
-        return "Base"+fileName;
+        return fileName;
     }
 
     /**

@@ -19,4 +19,8 @@ public class Root {
     public Root setData(Object data){
         return null;
     }
+
+    public static Root getRootFailAndSimpleMsg(){
+        return null;
+    }
 }
