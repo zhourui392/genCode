@@ -1,4 +1,4 @@
-package com.teleus.service;
+package com.teleus.service.base;
 
 public interface BaseService<T> {
 	

@@ -1,8 +1,8 @@
-package com.teleus.service.impl;
+package com.teleus.service.base.impl;
 
 
 import com.teleus.mapper.base.BaseMapper;
-import com.teleus.service.BaseService;
+import com.teleus.service.base.BaseService;
 
 /**
  * @author zhourui

@@ -24,9 +24,12 @@ import org.mybatis.generator.codegen.AbstractXmlGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.*;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.XMLMapperGenerator;
 import org.mybatis.generator.config.PropertyRegistry;
+import org.mybatis.generator.internal.util.StringUtility;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
@@ -43,13 +46,15 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
                 introspectedTable.getFullyQualifiedTable().toString()));
         CommentGenerator commentGenerator = context.getCommentGenerator();
 
-        String myBatis3JavaMapperType = introspectedTable.getMyBatis3JavaServiceType();
-                
+        String myBatis3JavaServiceType = introspectedTable.getMyBatis3JavaServiceType();
+        String baseRecordType = introspectedTable.getBaseRecordType();
+        String mapperType = introspectedTable.getMyBatis3JavaMapperType();
+
         List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
 
         //生成接口
         Interface interfaze = interfaceout(commentGenerator,
-                myBatis3JavaMapperType);
+                myBatis3JavaServiceType,baseRecordType);
         if (context.getPlugins().clientGenerated(interfaze, null,
                 introspectedTable)) {
             answer.add(interfaze);
@@ -57,7 +62,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
 
         //生成实现类
         TopLevelClass topLevelClass = geneTopLevelClass(commentGenerator,
-                myBatis3JavaMapperType);
+                myBatis3JavaServiceType,baseRecordType,mapperType);
 
         if (context.getPlugins().modelExampleClassGenerated(
                 topLevelClass, introspectedTable)) {
@@ -69,67 +74,100 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
     }
 
     private TopLevelClass geneTopLevelClass(CommentGenerator commentGenerator,
-                                            String myBatis3JavaMapperType){
-        String cc = myBatis3JavaMapperType.substring(0, myBatis3JavaMapperType.lastIndexOf("."));
-        String bb = myBatis3JavaMapperType.substring(myBatis3JavaMapperType.lastIndexOf(".")+1,myBatis3JavaMapperType.length());
+                                            String myBatis3JavaServiceType,
+                                            String baseRecordType,String myBatis3JavaMapperType){
+        FullyQualifiedJavaType interfaceType = new FullyQualifiedJavaType(myBatis3JavaServiceType);
 
-        String myBatis3JavaMapperTypeDone = cc+".impl."+bb+"Impl";
-        FullyQualifiedJavaType type = new FullyQualifiedJavaType(myBatis3JavaMapperTypeDone);
+        String myBatis3JavaServiceImpl = interfaceType.getPackageName()+".impl."+interfaceType.getShortName()+"Impl";
+        FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(baseRecordType);
+        FullyQualifiedJavaType implType = new FullyQualifiedJavaType(myBatis3JavaServiceImpl);
+        String baseServiceImpl = interfaceType.getPackageName()+".base.impl.BaseServiceImpl<"+modelType.getShortName()+">";
+        FullyQualifiedJavaType baseServiceImplType = new FullyQualifiedJavaType(baseServiceImpl);
+        FullyQualifiedJavaType mapperType = new FullyQualifiedJavaType(myBatis3JavaMapperType);
 
-        TopLevelClass topLevelClass = new TopLevelClass(type);
+        TopLevelClass topLevelClass = new TopLevelClass(implType);
+
+        //add interface
+        topLevelClass.addSuperInterface(interfaceType);
+
+        //add extends
+        topLevelClass.setSuperClass(baseServiceImplType);
+
+        //add annotation
+        topLevelClass.addAnnotation("@Service");
+
+        //add resource
+        Field field = new Field();
+        field.setVisibility(JavaVisibility.PRIVATE);
+        field.setType(mapperType);
+        field.setName(StringUtility.lowFirstString(mapperType.getShortName()));
+        field.addAnnotation("@Resource");
+        topLevelClass.addField(field);
+
+
         topLevelClass.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(topLevelClass);
 
-        // add default constructor
+        // add override method
+        String baseMapper = mapperType.getPackageName()+".base.BaseMapper<"+modelType.getShortName()+">";
+        FullyQualifiedJavaType baseMapperType = new FullyQualifiedJavaType(baseMapper);
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
-        method.setConstructor(true);
-        method.setName(type.getShortName());
-        method.addBodyLine("oredCriteria = new ArrayList<Criteria>();"); //$NON-NLS-1$
+        method.setReturnType(baseMapperType);
+        method.setName("getBaseMapper");
+        method.addAnnotation("@Override");
+        method.addBodyLine("return "+ StringUtility.lowFirstString(modelType.getShortName())+"Mapper;"); //$NON-NLS-1$
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);
+
+        //add imports
+        Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
+        fullyQualifiedJavaTypes.add(interfaceType);
+        fullyQualifiedJavaTypes.add(modelType);
+        fullyQualifiedJavaTypes.add(baseServiceImplType);
+        FullyQualifiedJavaType serviceType = new FullyQualifiedJavaType("org.springframework.stereotype.Service");
+        fullyQualifiedJavaTypes.add(serviceType);
+        FullyQualifiedJavaType resourceType = new FullyQualifiedJavaType("javax.annotation.Resource");
+        fullyQualifiedJavaTypes.add(resourceType);
+        fullyQualifiedJavaTypes.add(mapperType);
+        fullyQualifiedJavaTypes.add(baseMapperType);
+        topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
+
         return topLevelClass;
     }
 
 	private Interface interfaceout(CommentGenerator commentGenerator,
-			String myBatis3JavaMapperType) {
-        String cc = myBatis3JavaMapperType.substring(0, myBatis3JavaMapperType.lastIndexOf("."));
-        String bb = myBatis3JavaMapperType.substring(myBatis3JavaMapperType.lastIndexOf(".")+1,myBatis3JavaMapperType.length());
-
-        String myBatis3JavaMapperTypeDone = cc+"."+bb;
-        FullyQualifiedJavaType type = new FullyQualifiedJavaType(
-                myBatis3JavaMapperTypeDone);
-        Interface interfaze = new Interface(type);
+			String myBatis3JavaMapperType,String baseRecordType) {
+        FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(
+                baseRecordType);
+        FullyQualifiedJavaType serviceType = new FullyQualifiedJavaType(
+                myBatis3JavaMapperType);
+        Interface interfaze = new Interface(serviceType);
         interfaze.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(interfaze);
 
-        String rootInterface = introspectedTable
-                .getTableConfigurationProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
-        if (!stringHasValue(rootInterface)) {
-            rootInterface = context.getJavaClientGeneratorConfiguration()
-                    .getProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
-        }
-
-        rootInterface =cc+".BaseService<"+type.getShortName().replace("Service", "").replace("Base", "")+">";
+        String rootInterface = serviceType.getPackageName()+".base.BaseService<"+modelType.getShortName()+">";
         if (stringHasValue(rootInterface)) {
             FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
                     rootInterface);
             interfaze.addSuperInterface(fqjt);
-            interfaze.addImportedType(fqjt);
+
+            Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
+            fullyQualifiedJavaTypes.add(fqjt);
+            fullyQualifiedJavaTypes.add(modelType);
+            interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 
-        addCountByExampleMethod(interfaze);
+//        addCountByExampleMethod(interfaze);
 
         return interfaze;
 	}
 
 
     protected void addCountByExampleMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateCountByExample()) {
             AbstractJavaMapperMethodGenerator methodGenerator = new CountByExampleMethodGenerator();
             initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
     }
 
     protected void initializeAndExecuteGenerator(

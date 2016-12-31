@@ -102,4 +102,14 @@ public class StringUtility {
 
         return s.indexOf('%') != -1 || s.indexOf('_') != -1;
     }
+
+    public static String lowFirstString(String s) {
+        if (Character.isLowerCase(s.charAt(0))) {
+            return s;
+        }else{
+            StringBuilder sb = new StringBuilder(s);
+            sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+            return sb.toString();
+        }
+    }
 }
