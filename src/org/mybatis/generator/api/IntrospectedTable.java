@@ -60,6 +60,7 @@ public abstract class IntrospectedTable {
         /** also used as XML Mapper namespace if a Java mapper is generated */
         ATTR_MYBATIS3_JAVA_MAPPER_TYPE,
         ATTR_MYBATIS3_JAVA_SERVICE_TYPE,
+        ATTR_MYBATIS3_JAVA_CONTROLLER_TYPE,
         /** used as XML Mapper namespace if no client is generated */
         ATTR_MYBATIS3_FALLBACK_SQL_MAP_NAMESPACE,
         ATTR_FULLY_QUALIFIED_TABLE_NAME_AT_RUNTIME,
@@ -484,6 +485,8 @@ public abstract class IntrospectedTable {
 
         calculateServiceAttributes();
 
+        calculateControllerAttributes();
+
         if (tableConfiguration.getModelType() == ModelType.HIERARCHICAL) {
             rules = new HierarchicalModelRules(this);
         } else if (tableConfiguration.getModelType() == ModelType.FLAT) {
@@ -887,6 +890,26 @@ public abstract class IntrospectedTable {
         setMyBatis3JavaServiceType(sb.toString());
     }
 
+    protected String calculateJavaControllerPackage() {
+        JavaControllerGeneratorConfiguration config = context
+                .getJavaControllerGeneratorConfiguration();
+        StringBuilder sb = new StringBuilder();
+        sb.append(config.getTargetPackage());
+        sb.append(fullyQualifiedTable.getSubPackage(isSubPackagesEnabled(config)));
+        return sb.toString();
+    }
+
+
+    protected void calculateControllerAttributes() {
+        StringBuilder sb = new StringBuilder();
+        sb.setLength(0);
+        sb.append(calculateJavaControllerPackage());
+        sb.append('.');
+        sb.append(fullyQualifiedTable.getDomainObjectName());
+        sb.append("Controller"); //$NON-NLS-1$
+        setMyBatis3JavaControllerType(sb.toString());
+    }
+
 
     protected String calculateSqlMapPackage() {
         StringBuilder sb = new StringBuilder();
@@ -1116,6 +1139,16 @@ public abstract class IntrospectedTable {
         internalAttributes.put(
                 InternalAttribute.ATTR_MYBATIS3_JAVA_SERVICE_TYPE,
                 mybatis3JavaServiceType);
+    }
+
+    public String getMyBatis3JavaControllerType() {
+        return internalAttributes
+                .get(InternalAttribute.ATTR_MYBATIS3_JAVA_CONTROLLER_TYPE);
+    }
+    public void setMyBatis3JavaControllerType(String myBatis3JavaControllerType) {
+        internalAttributes.put(
+                InternalAttribute.ATTR_MYBATIS3_JAVA_CONTROLLER_TYPE,
+                myBatis3JavaControllerType);
     }
 
     public String getMyBatis3SqlProviderType() {

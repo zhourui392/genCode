@@ -49,7 +49,7 @@
   tables.
 -->
 <!ELEMENT context (property*, plugin*, commentGenerator?, jdbcConnection, javaTypeResolver?,
-                         javaModelGenerator,javaServiceGenerator, sqlMapGenerator?, javaClientGenerator?, table+)>
+                         javaModelGenerator,javaServiceGenerator,javaControllerGenerator,sqlMapGenerator?, javaClientGenerator?, table+)>
 <!ATTLIST context id ID #REQUIRED
   defaultModelType CDATA #IMPLIED
   targetRuntime CDATA #IMPLIED
@@ -109,6 +109,13 @@
         targetPackage CDATA #REQUIRED
         targetProject CDATA #REQUIRED>
 
+<!-- javaController
+-->
+<!ELEMENT javaControllerGenerator (property*)>
+<!ATTLIST javaControllerGenerator
+        targetPackage CDATA #REQUIRED
+        targetProject CDATA #REQUIRED>
+
 <!--
   The javaTypeResolver element is used to define properties of the Java Type Resolver.
   The Java Type Resolver is used to calculate Java types from database column information.
@@ -118,6 +125,9 @@
 <!ELEMENT javaTypeResolver (property*)>
 <!ATTLIST javaTypeResolver
   type CDATA #IMPLIED>
+
+
+
 
 <!--
   The sqlMapGenerator element is used to define properties of the SQL Map Generator.

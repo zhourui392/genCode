@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import org.mybatis.generator.codegen.mybatis3.controller.JavaControllerGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.ObjectFactory;
@@ -160,6 +161,8 @@ public class MyBatisGeneratorConfigurationParser {
                 parseJavaModelGenerator(context, childNode);
             } else if ("javaServiceGenerator".equals(childNode.getNodeName())) { //$NON-NLS-1$
                 parseJavaServiceGenerator(context, childNode);
+            } else if ("javaControllerGenerator".equals(childNode.getNodeName())) { //$NON-NLS-1$
+                parseJavaControllerGenerator(context, childNode);
             } else if ("javaTypeResolver".equals(childNode.getNodeName())) { //$NON-NLS-1$
                 parseJavaTypeResolver(context, childNode);
             } else if ("sqlMapGenerator".equals(childNode.getNodeName())) { //$NON-NLS-1$
@@ -530,6 +533,31 @@ public class MyBatisGeneratorConfigurationParser {
             }
         }
     }
+
+    private void parseJavaControllerGenerator(Context context, Node node) {
+        JavaControllerGeneratorConfiguration javaControllerGeneratorConfiguration = new JavaControllerGeneratorConfiguration();
+        context.setJavaControllerGeneratorConfiguration(javaControllerGeneratorConfiguration);
+        Properties attributes = parseAttributes(node);
+        String targetPackage = attributes.getProperty("targetPackage"); //$NON-NLS-1$
+        String targetProject = attributes.getProperty("targetProject"); //$NON-NLS-1$
+
+        javaControllerGeneratorConfiguration.setTargetPackage(targetPackage);
+        javaControllerGeneratorConfiguration.setTargetProject(targetProject);
+
+        NodeList nodeList = node.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node childNode = nodeList.item(i);
+
+            if (childNode.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            if ("property".equals(childNode.getNodeName())) { //$NON-NLS-1$
+                parseProperty(javaControllerGeneratorConfiguration, childNode);
+            }
+        }
+    }
+
 
     private void parseJavaClientGenerator(Context context, Node node) {
         JavaClientGeneratorConfiguration javaClientGeneratorConfiguration = new JavaClientGeneratorConfiguration();

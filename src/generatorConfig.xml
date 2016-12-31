@@ -40,11 +40,12 @@
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
-
 		<javaServiceGenerator targetPackage="com.teleus.service" targetProject="src">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaServiceGenerator>
+		<javaControllerGenerator targetPackage="com.teleus.controller" targetProject="src">
+		</javaControllerGenerator>
 		<!-- 生成的映射文件包名和位置 -->
 		<sqlMapGenerator targetPackage="com.teleus.dao" targetProject="src">
 			<property name="enableSubPackages" value="true" />

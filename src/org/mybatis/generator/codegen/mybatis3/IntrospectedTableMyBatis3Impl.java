@@ -28,6 +28,7 @@ import org.mybatis.generator.codegen.AbstractGenerator;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.AbstractXmlGenerator;
+import org.mybatis.generator.codegen.mybatis3.controller.JavaControllerGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.AnnotatedClientGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.JavaMapperGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.MixedClientGenerator;
@@ -73,6 +74,8 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
         calculateXmlMapperGenerator(javaClientGenerator, warnings, progressCallback);
 
         calculateJavaServiceGenerator(warnings,progressCallback);
+
+        calculateJavaControllerGenerator(warnings,progressCallback);
     }
 
     protected void calculateXmlMapperGenerator(AbstractJavaClientGenerator javaClientGenerator, 
@@ -177,6 +180,14 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
             javaServiceGenerators.add(javaGenerator);
     }
 
+    protected void calculateJavaControllerGenerator(List<String> warnings,
+                                                 ProgressCallback progressCallback) {
+        AbstractJavaGenerator javaGenerator = new JavaControllerGenerator();
+        initializeAbstractGenerator(javaGenerator, warnings,
+                progressCallback);
+        javaControllerGenerators.add(javaGenerator);
+    }
+
     protected void initializeAbstractGenerator(
             AbstractGenerator abstractGenerator, List<String> warnings,
             ProgressCallback progressCallback) {
@@ -220,6 +231,7 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
             }
         }
 
+        // add java service
         for (AbstractJavaGenerator javaGenerator : javaServiceGenerators) {
             List<CompilationUnit> compilationUnits = javaGenerator
                     .getCompilationUnits();
@@ -233,8 +245,19 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
             }
         }
 
-        // add java service and controller
-
+        // add java controller
+        for (AbstractJavaGenerator javaGenerator : javaControllerGenerators) {
+            List<CompilationUnit> compilationUnits = javaGenerator
+                    .getCompilationUnits();
+            for (CompilationUnit compilationUnit : compilationUnits) {
+                GeneratedJavaFile gjf = new GeneratedJavaFile(compilationUnit,
+                        context.getJavaControllerGeneratorConfiguration()
+                                .getTargetProject(),
+                        context.getProperty(PropertyRegistry.CONTEXT_JAVA_FILE_ENCODING),
+                        context.getJavaFormatter());
+                answer.add(gjf);
+            }
+        }
 
         return answer;
     }
