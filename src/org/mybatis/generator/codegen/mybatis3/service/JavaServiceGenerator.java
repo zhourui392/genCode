@@ -96,13 +96,28 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         //add annotation
         topLevelClass.addAnnotation("@Service");
 
-        //add resource
-        Field field = new Field();
-        field.setVisibility(JavaVisibility.PRIVATE);
-        field.setType(mapperType);
-        field.setName(StringUtility.lowFirstString(mapperType.getShortName()));
-        field.addAnnotation("@Resource");
-        topLevelClass.addField(field);
+        //add field
+        //logger
+        Field loggerField = new Field();
+        loggerField.setVisibility(JavaVisibility.PRIVATE);
+        loggerField.setStatic(true);
+        loggerField.setFinal(true);
+        String loggerString = "org.slf4j.Logger";
+        String loggerFactoryString = "org.slf4j.LoggerFactory";
+        FullyQualifiedJavaType loggerType = new FullyQualifiedJavaType(loggerString);
+        FullyQualifiedJavaType loggerFactoryType = new FullyQualifiedJavaType(loggerFactoryString);
+        loggerField.setType(loggerType);
+        loggerField.setName("logger");
+        loggerField.setInitializationString("LoggerFactory.getLogger("+implType.getShortName()+".class)");
+        loggerField.addAnnotation("@Resource");
+        topLevelClass.addField(loggerField);
+        //mapper
+        Field mapperFiled = new Field();
+        mapperFiled.setVisibility(JavaVisibility.PRIVATE);
+        mapperFiled.setType(mapperType);
+        mapperFiled.setName(StringUtility.lowFirstString(mapperType.getShortName()));
+        mapperFiled.addAnnotation("@Resource");
+        topLevelClass.addField(mapperFiled);
 
 
         topLevelClass.setVisibility(JavaVisibility.PUBLIC);
@@ -132,6 +147,8 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(resourceType);
         fullyQualifiedJavaTypes.add(mapperType);
         fullyQualifiedJavaTypes.add(baseMapperType);
+        fullyQualifiedJavaTypes.add(loggerType);
+        fullyQualifiedJavaTypes.add(loggerFactoryType);
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
 
         return topLevelClass;
