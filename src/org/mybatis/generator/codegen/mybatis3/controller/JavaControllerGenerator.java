@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 /**
@@ -94,6 +93,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         commentGenerator.addJavaFileComment(topLevelClass);
 
         //TODO add method
+        addGetById(commentGenerator,topLevelClass,modelType,serviceType);
 
         //add imports
         Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
@@ -103,8 +103,18 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(controllerAnnotationType);
         FullyQualifiedJavaType requestMappingType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.RequestMapping");
         fullyQualifiedJavaTypes.add(requestMappingType);
+        FullyQualifiedJavaType pathVariableType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.PathVariable");
+        fullyQualifiedJavaTypes.add(pathVariableType);
+        FullyQualifiedJavaType requestMethodType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.RequestMethod");
+        fullyQualifiedJavaTypes.add(requestMethodType);
+        FullyQualifiedJavaType requestParamType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.RequestParam");
+        fullyQualifiedJavaTypes.add(requestParamType);
+        FullyQualifiedJavaType responseBodyType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.ResponseBody");
+        fullyQualifiedJavaTypes.add(responseBodyType);
         FullyQualifiedJavaType resourceType = new FullyQualifiedJavaType("javax.annotation.Resource");
         fullyQualifiedJavaTypes.add(resourceType);
+        FullyQualifiedJavaType rootType = new FullyQualifiedJavaType(controllerType.getPackageName().replace("controller","")+"common.util.Root");
+        fullyQualifiedJavaTypes.add(rootType);
         fullyQualifiedJavaTypes.add(loggerType);
         fullyQualifiedJavaTypes.add(loggerFactoryType);
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
@@ -112,18 +122,24 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         return topLevelClass;
     }
 
-    protected void addCountByExampleMethod(Interface interfaze) {
-        AbstractJavaMapperMethodGenerator methodGenerator = new CountByExampleMethodGenerator();
-        initializeAndExecuteGenerator(methodGenerator, interfaze);
-    }
+    protected void addGetById(CommentGenerator commentGenerator,TopLevelClass topLevelClass,
+                              FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType) {
+        // add override method
+        String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
+        Method method = new Method();
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setReturnType(FullyQualifiedJavaType.getStringInstance());
+        method.setName("get"+modelType.getShortName()+"ById");
+        Parameter parameter = new Parameter(FullyQualifiedJavaType.getIntInstance(),"id");
+        parameter.addAnnotation("@PathVariable(\"id\")");
+        method.addParameter(parameter);
+        method.addAnnotation("@ResponseBody");
+        method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"/{id}\", method= RequestMethod.GET)");
+        method.addBodyLine(modelType.getShortName()+" "+lowModelShortName + " = "
+                + StringUtility.lowFirstString(serviceType.getShortName()) +".getById(id);"); //$NON-NLS-1$
+        method.addBodyLine("return Root.getRootOKAndSimpleMsg().setData("+lowModelShortName+").toJsonString();"); //$NON-NLS-1$
 
-    protected void initializeAndExecuteGenerator(
-            AbstractJavaMapperMethodGenerator methodGenerator,
-            Interface interfaze) {
-        methodGenerator.setContext(context);
-        methodGenerator.setIntrospectedTable(introspectedTable);
-        methodGenerator.setProgressCallback(progressCallback);
-        methodGenerator.setWarnings(warnings);
-        methodGenerator.addInterfaceElements(interfaze);
+        commentGenerator.addGeneralMethodComment(method, introspectedTable);
+        topLevelClass.addMethod(method);
     }
 }
