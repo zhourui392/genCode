@@ -1,6 +1,10 @@
-genCode
-=======
+在mybatis的generator工具的基础上，根据自己的SSI的脚手架写一个对应的生成工具
 
-在mybatis的反向生成工具的基础上，根据自己的基本SSI的框架写一个对应的生成工具，基本的增删改查、已经最基本的分页
+目标：实现基本的Restful接口，包括增删改查和分页
 
-准备写一个项目生成工具，包括service,controller
+已完成：
+Service类生成
+
+TODO:
+Mybatis的分页插件
+Controller以及基本的restful接口
