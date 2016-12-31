@@ -4,7 +4,7 @@
 
 已完成：
 Service类生成
+Mybatis的分页:使用最基本的分页
+Controller以及基本的restful接口:增删改查
 
-TODO:
-Mybatis的分页插件
-Controller以及基本的restful接口
+TODO:完善代码，现在好多直接写死在代码里
