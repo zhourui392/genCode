@@ -36,12 +36,13 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         String serviceType = introspectedTable.getMyBatis3JavaServiceType();
 
         List<IntrospectedColumn> introspectedColumns = introspectedTable.getBaseColumns();
+        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
 
         List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
 
         //生成Controller
         TopLevelClass topLevelClass = geneTopLevelClass(commentGenerator,
-                myBatis3JavaControllerType,baseRecordType,serviceType,introspectedColumns);
+                myBatis3JavaControllerType,baseRecordType,serviceType,introspectedColumns,primaryKeyColumns);
 
         if (context.getPlugins().modelExampleClassGenerated(
                 topLevelClass, introspectedTable)) {
@@ -55,7 +56,8 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
     private TopLevelClass geneTopLevelClass(CommentGenerator commentGenerator,
                                             String myBatis3JavaControllerType,
                                             String baseRecordType,String myBatis3JavaServiceType,
-                                            List<IntrospectedColumn> introspectedColumns ){
+                                            List<IntrospectedColumn> introspectedColumns,
+                                            List<IntrospectedColumn> primaryKeyColumns){
         FullyQualifiedJavaType controllerType = new FullyQualifiedJavaType(myBatis3JavaControllerType);
 
         FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(baseRecordType);
@@ -101,7 +103,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         addGetByIdMethod(commentGenerator,topLevelClass,modelType,serviceType);
         addDeleteByIdMethod(commentGenerator,topLevelClass,modelType,serviceType);
         addAddMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns);
-        addUpdateMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns);
+        addUpdateMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns,primaryKeyColumns);
         addGetByPageMethod(commentGenerator,topLevelClass,modelType,serviceType);
 
         //add imports
@@ -212,7 +214,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
     protected void addUpdateMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
                                 FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType,
-                                List<IntrospectedColumn> introspectedColumns) {
+                                List<IntrospectedColumn> introspectedColumns,List<IntrospectedColumn> primaryKeyColumns) {
         String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
@@ -222,15 +224,19 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"/{id}\", method= RequestMethod.POST)");
 
         method.addBodyLine(modelType.getShortName() + " "+lowModelShortName+" = new "+modelType.getShortName() +"();");
+
+
+        //primary key
+        for (IntrospectedColumn introspectedKey : primaryKeyColumns){
+            Parameter parameter = new Parameter(FullyQualifiedJavaType.getIntInstance(),introspectedKey.getActualColumnName());
+            parameter.addAnnotation("@PathVariable(\""+introspectedKey.getActualColumnName()+"\")");
+            method.addParameter(parameter);
+            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedKey.getActualColumnName())+"("+introspectedKey.getActualColumnName()+");");
+        }
+
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
-            Parameter parameter;
-            if (!introspectedColumn.getActualColumnName().equals("id")){
-                parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
-                parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
-            }else {
-                parameter = new Parameter(FullyQualifiedJavaType.getIntInstance(),"id");
-                parameter.addAnnotation("@PathVariable(\"id\")");
-            }
+            Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
+            parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
             method.addParameter(parameter);
 
             method.addBodyLine("if ("+introspectedColumn.getActualColumnName()+" != null){");
