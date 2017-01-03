@@ -20,7 +20,11 @@ import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.internal.util.StringUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -97,14 +101,13 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         loggerField.setVisibility(JavaVisibility.PRIVATE);
         loggerField.setStatic(true);
         loggerField.setFinal(true);
-        String loggerString = "org.slf4j.Logger";
-        String loggerFactoryString = "org.slf4j.LoggerFactory";
+        String loggerString = Logger.class.getName();
+        String loggerFactoryString = LoggerFactory.class.getName();
         FullyQualifiedJavaType loggerType = new FullyQualifiedJavaType(loggerString);
         FullyQualifiedJavaType loggerFactoryType = new FullyQualifiedJavaType(loggerFactoryString);
         loggerField.setType(loggerType);
         loggerField.setName("logger");
         loggerField.setInitializationString("LoggerFactory.getLogger("+implType.getShortName()+".class)");
-        loggerField.addAnnotation("@Resource");
         topLevelClass.addField(loggerField);
         //mapper
         Field mapperFiled = new Field();
@@ -137,9 +140,9 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(interfaceType);
         fullyQualifiedJavaTypes.add(modelType);
         fullyQualifiedJavaTypes.add(baseServiceImplType);
-        FullyQualifiedJavaType serviceType = new FullyQualifiedJavaType("org.springframework.stereotype.Service");
+        FullyQualifiedJavaType serviceType = new FullyQualifiedJavaType(Service.class.getName());
         fullyQualifiedJavaTypes.add(serviceType);
-        FullyQualifiedJavaType resourceType = new FullyQualifiedJavaType("javax.annotation.Resource");
+        FullyQualifiedJavaType resourceType = new FullyQualifiedJavaType(Resource.class.getName());
         fullyQualifiedJavaTypes.add(resourceType);
         fullyQualifiedJavaTypes.add(mapperType);
         fullyQualifiedJavaTypes.add(baseMapperType);

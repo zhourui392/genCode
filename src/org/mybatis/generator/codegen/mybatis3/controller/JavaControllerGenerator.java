@@ -266,7 +266,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addBodyLine("pageQuery.setPageIndex(pageIndex);");
         method.addBodyLine("}");
         method.addBodyLine("PageResult<"+modelType.getShortName()+"> pageResult = "+ StringUtility.lowFirstString(serviceType.getShortName())+".get"+modelType.getShortName()+"sByPage(pageQuery);" );
-        method.addBodyLine("return Root.getRootFailAndSimpleMsg().setData(pageResult).toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("return Root.getRootOKAndSimpleMsg().setData(pageResult).toJsonString();"); //$NON-NLS-1$
         topLevelClass.addMethod(method);
     }
 
