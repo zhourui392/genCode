@@ -4,10 +4,13 @@ import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.AbstractJavaMapperMethodGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.CountByExampleMethodGenerator;
 import org.mybatis.generator.internal.util.StringUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -74,14 +77,13 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         loggerField.setVisibility(JavaVisibility.PRIVATE);
         loggerField.setStatic(true);
         loggerField.setFinal(true);
-        String loggerString = "org.slf4j.Logger";
-        String loggerFactoryString = "org.slf4j.LoggerFactory";
+        String loggerString = Logger.class.getName();
+        String loggerFactoryString = LoggerFactory.class.getName();
         FullyQualifiedJavaType loggerType = new FullyQualifiedJavaType(loggerString);
         FullyQualifiedJavaType loggerFactoryType = new FullyQualifiedJavaType(loggerFactoryString);
         loggerField.setType(loggerType);
         loggerField.setName("logger");
         loggerField.setInitializationString("LoggerFactory.getLogger("+controllerType.getShortName()+".class)");
-        loggerField.addAnnotation("@Resource");
         topLevelClass.addField(loggerField);
         //service
         Field serviceFiled = new Field();
@@ -100,24 +102,26 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         addDeleteByIdMethod(commentGenerator,topLevelClass,modelType,serviceType);
         addAddMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns);
         addUpdateMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns);
+        addGetByPageMethod(commentGenerator,topLevelClass,modelType,serviceType);
 
         //add imports
         Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
         fullyQualifiedJavaTypes.add(modelType);
         fullyQualifiedJavaTypes.add(serviceType);
-        FullyQualifiedJavaType controllerAnnotationType = new FullyQualifiedJavaType("org.springframework.stereotype.Controller");
+        FullyQualifiedJavaType controllerAnnotationType = new FullyQualifiedJavaType(Controller.class.getName());
+
         fullyQualifiedJavaTypes.add(controllerAnnotationType);
-        FullyQualifiedJavaType requestMappingType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.RequestMapping");
+        FullyQualifiedJavaType requestMappingType = new FullyQualifiedJavaType(RequestMapping.class.getName());
         fullyQualifiedJavaTypes.add(requestMappingType);
-        FullyQualifiedJavaType pathVariableType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.PathVariable");
+        FullyQualifiedJavaType pathVariableType = new FullyQualifiedJavaType(PathVariable.class.getName());
         fullyQualifiedJavaTypes.add(pathVariableType);
-        FullyQualifiedJavaType requestMethodType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.RequestMethod");
+        FullyQualifiedJavaType requestMethodType = new FullyQualifiedJavaType(RequestMethod.class.getName());
         fullyQualifiedJavaTypes.add(requestMethodType);
-        FullyQualifiedJavaType requestParamType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.RequestParam");
+        FullyQualifiedJavaType requestParamType = new FullyQualifiedJavaType(RequestParam.class.getName());
         fullyQualifiedJavaTypes.add(requestParamType);
-        FullyQualifiedJavaType responseBodyType = new FullyQualifiedJavaType("org.springframework.web.bind.annotation.ResponseBody");
+        FullyQualifiedJavaType responseBodyType = new FullyQualifiedJavaType(ResponseBody.class.getName());
         fullyQualifiedJavaTypes.add(responseBodyType);
-        FullyQualifiedJavaType resourceType = new FullyQualifiedJavaType("javax.annotation.Resource");
+        FullyQualifiedJavaType resourceType = new FullyQualifiedJavaType(Resource.class.getName());
         fullyQualifiedJavaTypes.add(resourceType);
         FullyQualifiedJavaType rootType = new FullyQualifiedJavaType(controllerType.getPackageName().replace("controller","")+"common.util.Root");
         fullyQualifiedJavaTypes.add(rootType);
@@ -252,7 +256,8 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addAnnotation("@ResponseBody");
         method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"s\", method= RequestMethod.GET)");
 
-        Parameter parameter = new Parameter(FullyQualifiedJavaType.getIntInstance(),"pageIndex");
+        FullyQualifiedJavaType integerType = new FullyQualifiedJavaType(Integer.class.getName());
+        Parameter parameter = new Parameter(integerType,"pageIndex");
         parameter.addAnnotation("@RequestParam(value = \"pageIndex\", required=false)");
         method.addParameter(parameter);
 
@@ -260,14 +265,8 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addBodyLine("if (pageIndex != null){");
         method.addBodyLine("pageQuery.setPageIndex(pageIndex);");
         method.addBodyLine("}");
-        method.addBodyLine("PageResult<"+modelType.getShortName()+"> pageResult = "+serviceType.getShortName()+".get"+modelType.getShortName()+"ListByPage(pageQuery)" );
-
-        method.addBodyLine("boolean resultBoolean = "
-                + StringUtility.lowFirstString(serviceType.getShortName()) +".update("+lowModelShortName+");"); //$NON-NLS-1$
-        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
-        method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
-
-        commentGenerator.addGeneralMethodComment(method, introspectedTable);
+        method.addBodyLine("PageResult<"+modelType.getShortName()+"> pageResult = "+ StringUtility.lowFirstString(serviceType.getShortName())+".get"+modelType.getShortName()+"sByPage(pageQuery);" );
+        method.addBodyLine("return Root.getRootFailAndSimpleMsg().setData(pageResult).toJsonString();"); //$NON-NLS-1$
         topLevelClass.addMethod(method);
     }
 
