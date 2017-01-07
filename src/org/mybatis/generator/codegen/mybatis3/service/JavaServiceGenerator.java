@@ -215,11 +215,14 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         method.addAnnotation("@Override");
         method.addParameter(new Parameter(pageQueryType, "pageQuery")); //$NON-NLS-1$
         method.addBodyLine("PageResult<"+modelType.getShortName()+"> result = new PageResult();");
-        method.addBodyLine("List<"+modelType.getShortName()+"> list = " + mapperVar + ".getListByConditions(pageQuery);");
-        method.addBodyLine("int totalCount = " + mapperVar + ".getCountByConditions();");
         method.addBodyLine("result.setPageQuery(pageQuery);");
-        method.addBodyLine("result.setItems(list);");
+        method.addBodyLine("int totalCount = " + mapperVar + ".getCountByConditions();");
         method.addBodyLine("result.setCount(totalCount);");
+        method.addBodyLine("if (totalCount == 0){");
+        method.addBodyLine("return result;");
+        method.addBodyLine("}");
+        method.addBodyLine("List<"+modelType.getShortName()+"> list = " + mapperVar + ".getListByConditions(pageQuery);");
+        method.addBodyLine("result.setItems(list);");
         method.addBodyLine("return result;");
         topLevelClass.addMethod(method);
     }
