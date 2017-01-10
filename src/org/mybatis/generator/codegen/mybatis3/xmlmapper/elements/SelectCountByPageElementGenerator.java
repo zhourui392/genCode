@@ -26,7 +26,7 @@ public class SelectCountByPageElementGenerator extends
                 "int"));
 
         StringBuilder sb = new StringBuilder();
-        sb.append("select count(id) from " + introspectedTable
+        sb.append("select count(*) from " + introspectedTable
                 .getAliasedFullyQualifiedTableNameAtRuntime()+"\n"); //$NON-NLS-1$
         sb.append("     where 1=1 ");
         answer.addElement(new TextElement(sb.toString()));

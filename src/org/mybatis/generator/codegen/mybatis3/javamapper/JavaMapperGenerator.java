@@ -134,8 +134,6 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             fullyQualifiedJavaTypes.add(fqjt);
             FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(type.getPackageName().replace("mapper","")+"common.util.page.PageQuery");
             fullyQualifiedJavaTypes.add(pageQueryType);
-            FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(type.getPackageName().replace("mapper","")+"common.util.page.PageResult");
-            fullyQualifiedJavaTypes.add(pageResultType);
             fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
             FullyQualifiedJavaType paramType = new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param");
             fullyQualifiedJavaTypes.add(paramType);
