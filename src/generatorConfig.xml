@@ -26,7 +26,7 @@
 		-->
 
 		<!---->
-		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://127.0.0.1:3306/teleuscloud" userId="root" password="root">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/teleus" userId="root" password="root">
 		</jdbcConnection>
 		<!--
 		<jdbcConnection driverClass="org.postgresql.Driver" connectionURL="jdbc:postgresql://127.0.0.1:5432/issgateway" userId="postgres" password="123456">
@@ -40,6 +40,7 @@
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
+
 		<javaServiceGenerator targetPackage="com.teleus.service" targetProject="src">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
@@ -58,8 +59,7 @@
 			
 		-->
 
-		<table tableName="t_consultation" domainObjectName="Consultation" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
-		<table tableName="t_consultationMember" domainObjectName="ConsultationMember" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+		<table tableName="t_user" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
 
 	</context>
 </generatorConfiguration>

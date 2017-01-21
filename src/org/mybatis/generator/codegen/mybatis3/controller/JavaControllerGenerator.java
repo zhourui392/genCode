@@ -1,5 +1,7 @@
 package org.mybatis.generator.codegen.mybatis3.controller;
 
+import com.zr.EachModel;
+import com.zr.GenerCode;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.*;
@@ -193,6 +195,8 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"\", method= RequestMethod.POST)");
 
         method.addBodyLine(modelType.getShortName() + " "+lowModelShortName+" = new "+modelType.getShortName() +"();");
+        EachModel eachModel = new EachModel();
+        eachModel.setModelName(lowModelShortName);
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
             if (!introspectedColumn.getActualColumnName().equals("id")){
                 Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
@@ -200,9 +204,11 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
                 method.addParameter(parameter);
 
                 method.addBodyLine(lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
-
+                eachModel.addFiled(introspectedColumn.getActualColumnName());
             }
         }
+        GenerCode.eachModels.add(eachModel);
+
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".add("+lowModelShortName+");"); //$NON-NLS-1$
         method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$

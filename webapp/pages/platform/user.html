@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>用户管理</title>	<meta name="description" content="">
+	<link type="text/css" href="../../libs/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link type="text/css" href="../../libs/bootstrap-plugin/css/bootstrap-datepicker.css" rel="stylesheet" />
+	<link type="text/css" href="../../css/common_cms.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="../../libs/xcConfirm/xcConfirm.css">
+	
+    <style type="text/css">
+    	#page ul li{cursor: pointer;}
+    	.btn-xs, .btn-group-xs>.btn{padding: 0px 2px;margin: 0 1px 0 1px;}
+    	#keyDiv{word-wrap:break-word;}
+		 #usermanagement { color: #fff; background: url(../../images/left_menu_bg.png) left top repeat-x;}
+		#usermanagement .glyphicon{ color: #fff;} 
+    </style>
+</head>
+<body>
+<!-- 顶部 header -->
+	<header>
+		<h1><a href="javascript:void(0)" style="color: white;font-size: 30px;text-decoration: none;cursor: default;"><img alt="" src="../../images/logo_cms.png"><span data-i18n="head.backTitle"></span></a></h1>
+	</header>
+
+<!-- 主体部分 -->
+	<div class="main">
+		<div class="left_menu">
+		</div>
+		<div class="content_wrap">
+			<h2 data-i18n="user.head"></h2>
+			<div class="func_wrap">
+				<div class="addbtn"><button type="button" class="btn-success btn btn-add-record fl mr15" data-i18n="opt.add"></button></div>
+				<div class="search_filter" style="width:240px;">
+					<div class="input-group">
+						<input type="text"  class="form-control" placeholder="placeholder.userQueryPh" id="searchUserName">
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-search"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="list_wrap">
+				<table class="table table-bordered table-condensed">
+					<tr>
+						<th width="15%" data-i18n="user.name"></th>
+						<th width="15%" data-i18n="user.account"></th>
+						<th width="15%" data-i18n="user.type"></th>
+						<th width="15%" data-i18n="user.hospital"></th>
+						<th width="13%" data-i18n="user.createTime"></th>
+						<th width="13%" data-i18n="user.updateTime"></th>
+						<th width="20%" data-i18n="opt.opt"></th>
+					</tr>
+					<tbody class="trValueList">
+					</tbody>
+				</table>
+				<div id="page" class="page_wrap" style="text-align: right; width: 100%;">
+				</div>
+				<input type="hidden" id="pageIndex" />
+				<input type="hidden" id="pageToal" />
+				<input type="hidden" id="pageEachNum" />
+			</div>
+		</div>
+		
+		<!-- 模态框（Modal） -->
+	<div class="modal fade" id="Goto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel"></h4>
+				</div>
+				<div class="modal-body">
+					<form>
+                        <input type="hidden" id="userId" value=""> 
+                        <input type="hidden" id="token" value=""/>
+                        <div class="form-group" style="height:50px;">
+                            <label for="userName"  data-i18n="user.edit.name"></label>
+                            <input class="form-control patientdecribe" id="userName" maxlength="100">
+                        </div>
+                        <div class="form-group" style="height:50px;">
+                            <label for="loginName" data-i18n="user.edit.account"></label>
+                            <input class="form-control patientdecribe" id="loginName" maxlength="50">
+                        </div>
+                        <div class="form-group" style="height:50px;">
+                            <label for="userPwd" data-i18n="user.edit.password"></label>
+                            <input class="form-control patientdecribe" type="password" id="userPwd" maxlength="50">
+                        </div>
+                        <div class="form-group" style="height:50px;">
+                            <label for="cUserPwd" data-i18n="user.edit.cUserPwd"></label>
+                            <input class="form-control patientdecribe" type="password" id="cUserPwd" maxlength="50">
+                        </div>
+                        <div class="form-group" style="height:50px;">
+                            <label for="name" data-i18n="user.edit.type"></label>
+                            <div>
+                              <select class="form-control patientdecribe" id="type">
+<!--                                 <option value="1">GE用户</option> -->
+<!--                                 <option value="2" selected="selected">普通用户</option> -->
+<!--                                 <option value="3">系统管理员</option> --><!-- 系统管理员不能手动添加 -->
+<!--                                 <option value="4">RA用户</option> -->
+                                <option value="5" data-i18n="user.typeInfo.shengchan"></option>
+                                <option value="6" data-i18n="user.typeInfo.yewuguanli"></option>
+                                <option value="7" data-i18n="user.typeInfo.yewutongji"></option>
+                                <option value="8" data-i18n="user.typeInfo.xitongyunwei"></option>
+                                <option value="9" data-i18n="user.typeInfo.yuanchengchaosheng"></option>
+                                <option value="10" data-i18n="user.typeInfo.yuanchengyingyong"></option>
+                              </select>
+                            </div>
+                        </div>
+                        <div id="hospital_div" class="form-group" style="height:50px;">
+                            <label for="hospitalList" data-i18n="user.typeInfo.hospital"></label>
+                            <div>
+                              <select class="form-control patientdecribe" id="hospitalList"></select>
+                            </div>
+                        </div>
+
+						<div id="companyType" class="form-group" style="height:50px;">
+							<label for="companyType" data-i18n="user.company">Company</label>
+							<div>
+								<select class="form-control patientdecribe" id="companyTypeList">
+									<option data-i18n="user.companyType.none"></option>
+									<option value="A">A</option>
+									<option value="B">B</option>
+								</select>
+							</div>
+						</div>
+                    </form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="opt.close"></button>
+					<button type="button" class="btn btn-primary btn-edit-info" data-i18n="opt.save"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+   <!-- 模态框（Modal） -->
+	<div class="modal fade" id="hospital_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="hospitalModalLabel"></h4>
+				</div>
+				<div class="modal-body" style="height: 450px;overflow-y :auto">
+				   <form>
+				     <div class="form-group">
+                    <!--  <label for="name">可分配医院列表：</label> -->
+                     <div>
+                      <div style="width:260px;float:left;border-right: 1px solid;border-right-color: black;">
+                       <label for="assignHospitalList" data-i18n="user.hospitalNotAllocated"></label>
+                       <ul style="width:260px;" id="assignHospitalList"></ul>
+                      </div>
+                      <div style="width:260px;float:left;border-left: 1px solid;border-left-color: black;padding-left: 5px;">
+                       <label for="selectedHospitalList" data-i18n="user.hospitalAllocated"></label>
+                       <ul style="width:260px;" id="selectedHospitalList"></ul>
+                      </div>
+                     </div>
+                     </div>
+				   </form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="opt.close"></button>
+					<button id="saveSelectedHospital" type="button" class="btn btn-primary btn-edit-info" data-i18n="opt.save"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<script type="text/javascript" src="../../libs/jquery/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../../js/common/common.js"></script>
+	<script src="../../libs/xcConfirm/xcConfirm.js"></script>
+	<script type="text/javascript" src="../../libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../libs/bootstrap-plugin/bootstrapSwitch.js"></script>
+	<script type="text/javascript" src="../../js/platform/initpage.js"></script>
+	<script type="text/javascript" src="../../libs/jquery/ComfirmDialog.js"></script>
+	<script type="text/javascript" src="../../libs/bootstrap-plugin/bootstrap-paginator.js"></script>
+	<script type="text/javascript" src="../../libs/bootstrap-plugin/bootstrap-datepicker.js"></script>
+	<script type="text/javascript" src="../../js/common/menu.js"></script>
+	<script type="text/javascript" src="../../js/common/ajaxSetup.js"></script>
+	<script type="text/javascript" src="../../js/common/checkInput.js"></script>
+	<script type="text/javascript" src="../../js/platform/user.js"></script>
+	<script type="text/javascript" src="../../js/common/common.js"></script>
+</body>
+</html>

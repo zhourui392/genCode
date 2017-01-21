@@ -14,6 +14,7 @@ import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
 public class GenerCode {
+	public static List<EachModel> eachModels = new ArrayList<>();
 	public static void main(String[] args) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
 		List<String> warnings = new ArrayList<String>();
 		boolean overwrite = true;
@@ -26,6 +27,14 @@ public class GenerCode {
 		MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config,
 				callback, warnings);
 		myBatisGenerator.generate(null);
+
+		//获取到模型、字段，然后生成JS和Html页面
+		for (EachModel eachModel :eachModels){
+			System.out.println(eachModel.toString());
+
+			//生成js、html
+
+		}
 
 	}
 }
