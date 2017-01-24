@@ -13,6 +13,7 @@ import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.mybatis.generator.internal.util.StringUtility;
 
 public class GenerCode {
 	public static List<EachModel> eachModels = new ArrayList<>();
@@ -39,7 +40,7 @@ public class GenerCode {
 
 			String html = new String(StreamUtils.getBytes(is));
 
-			html.replaceAll("##modelHead",eachModel.getModelName()+"管理");
+			html = html.replaceAll("##modelHead",eachModel.getModelName()+"管理");
 			//2、替换Header
 			StringBuilder tableHeader = new StringBuilder();
 			for (String field : eachModel.getFileds()){
@@ -52,8 +53,9 @@ public class GenerCode {
 
 
 			//3、替换新增模态框
-//2、替换Header
+			String id = eachModel.getModelName()+"Id";
 			StringBuilder modalBody = new StringBuilder();
+			modalBody.append("                        <input type=\"hidden\" id=\""+id+"\">\n");
 			for (String field : eachModel.getFileds()){
 				modalBody.append("                        <div class=\"form-group\" style=\"height:50px;\">\n");
 				modalBody.append("                            <label for=\""+field+"\">"+field+"</label>\n");
@@ -62,14 +64,9 @@ public class GenerCode {
 			}
 			html = html.replaceAll("##modalBody",modalBody.toString());
 
-
-
-
-
-			//4、替换修改模态框
+			//4、替换修改模态框  ?
 
 			//输出Html
-
 			File directory =  new File("src/com/teleus/html");
 			if (!directory.exists()){
 				directory.mkdirs();
@@ -79,7 +76,24 @@ public class GenerCode {
 			writeFile(targetFile, html,"utf-8");
 
 
+			//生成JS
+			//生成js、html,使用模板替换：
+			//1、读取模板
+			InputStream JSIS = GenerCode.class.getClassLoader().getResourceAsStream("org/template/template.js");
+
+			String jsTemplate = new String(StreamUtils.getBytes(JSIS));
+
+			jsTemplate.replaceAll("##Model", StringUtility.upperFirstString(eachModel.getModelName()));
+			jsTemplate = jsTemplate.replaceAll("##modelHead",eachModel.getModelName()+"管理");
 			//5、替换JS链接
+			StringBuilder initAddModelValueSB = new StringBuilder("        \\$(\"#"+id+"\").val(\"\");\n");
+			for (String field : eachModel.getFileds()){
+				initAddModelValueSB.append("        \\$(\"#"+field+"\").val(\"\");\n");
+			}
+
+			jsTemplate = jsTemplate.replaceAll("##modalValueInit",initAddModelValueSB.toString());
+
+
 
 
 			//6、替换JS分页
@@ -90,6 +104,16 @@ public class GenerCode {
 			//8、替换修改部分
 
 			//9、替换删除部分
+
+			//输出JS
+			//输出Html
+			File jsDirectory =  new File("src/com/teleus/js");
+			if (!jsDirectory.exists()){
+				jsDirectory.mkdirs();
+			}
+			File jsTargetFile = new File(jsDirectory, eachModel.getModelName()+".js");
+
+			writeFile(jsTargetFile, jsTemplate,"utf-8");
 
 
 		}

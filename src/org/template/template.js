@@ -8,18 +8,14 @@ $(function(){
     });
 
     $('#searchUserName').bind('keypress',function(event){
-        if(event.keyCode == "13")
-        {
+        if(event.keyCode == "13"){
             refreshTable();
         }
     });
 
     $(".btn-add-record").click(function(){
-        $("#myModalLabel").text(i18nKey('user.edit.addTitle'));
-        $("#userId").val("0");
-        $("#loginName").val("");
-        $("#userName").val("");
-        $("#userPwd").val("");
+        $("#myModalLabel").text("添加");
+##modalValueInit
 
         $('#Goto').modal('show');
         $(".btn-edit-info").unbind("click");
@@ -64,6 +60,7 @@ function saveUser(id){
 function initButton(){
     //修改
     $("a.btn-success").each(function(){
+##modalValueInit
         $(this).unbind("click");
         $(this).click(function(){
             var userId = $(this).attr("value");
@@ -74,7 +71,7 @@ function initButton(){
                 type: "POST",
                 success: function (data) {
                     var user = data.data;
-                    $("#myModalLabel").text(i18nKey('user.edit.updateTitle'));
+                    $("#myModalLabel").text("修改");
                     $("#userId").val(user.id);
                     $("#loginName").val(user.loginName);
                     $("#userName").val(user.userName);
