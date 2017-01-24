@@ -27,14 +27,7 @@ public class SelectByPageElementGenerator extends
                 introspectedTable.getBaseRecordType()));
 
         StringBuilder sb = new StringBuilder();
-        sb.append("select ");
-
-        for (IntrospectedColumn introspectedColumn : introspectedTable
-                .getAllColumns()) {
-            sb.append("t1." + introspectedColumn.getActualColumnName() + ", ");
-        }
-        sb.delete(sb.length()-2,sb.length()-1);
-        sb.append("\n");
+        sb.append("select <include refid=\"BaseT_Column_List\" />\n");
 
         sb.append("     from " + introspectedTable
                 .getAliasedFullyQualifiedTableNameAtRuntime()+" t1\n"); //$NON-NLS-1$
