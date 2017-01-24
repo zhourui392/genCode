@@ -45,4 +45,16 @@ public class EachModel {
         fileds.forEach(s -> filedsSb.append(s+","));
         return "modelName:"+modelName+",fields:"+filedsSb;
     }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public List<String> getFileds() {
+        return fileds;
+    }
+
+    public void setFileds(List<String> fileds) {
+        this.fileds = fileds;
+    }
 }

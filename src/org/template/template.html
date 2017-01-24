@@ -1,0 +1,54 @@
+<!-- 主体部分 -->
+<div class="main">
+    <div class="left_menu">
+    </div>
+    <div class="content_wrap">
+        <h2>##modelHead</h2>
+        <div class="func_wrap">
+            <div class="addbtn"><button type="button" class="btn-success btn btn-add-record fl mr15">新增</button></div>
+            <div class="search_filter" style="width:240px;">
+                <div class="input-group">
+                    <input type="text"  class="form-control" placeholder="placeholder.userQueryPh" id="searchUserName">
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-search"></span>
+						</span>
+                </div>
+            </div>
+        </div>
+        <div class="list_wrap">
+            <table class="table table-bordered table-condensed">
+                <tr>
+##TableHead
+                </tr>
+                <tbody class="trValueList">
+                </tbody>
+            </table>
+            <div id="page" class="page_wrap" style="text-align: right; width: 100%;">
+            </div>
+            <input type="hidden" id="pageIndex" />
+            <input type="hidden" id="pageToal" />
+            <input type="hidden" id="pageEachNum" />
+        </div>
+    </div>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="Goto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+##modalBody
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="opt.close"></button>
+                    <button type="button" class="btn btn-primary btn-edit-info" data-i18n="opt.save"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
