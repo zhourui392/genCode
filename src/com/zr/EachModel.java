@@ -104,16 +104,20 @@ public class EachModel {
 
         //6、替换JS分页
         StringBuilder pageToSetValueSB = new StringBuilder("");
+        pageToSetValueSB.append("                        "+getModelName()+"Html += \"<tr>\";\n");
         for (String field : getFileds()){
             pageToSetValueSB
-                    .append("                        "+getModelName()+"Html += \"<tr><td>\"+"+getModelName()+"."+field+"+\"</td>\";\n");
+                    .append("                        "+getModelName()+"Html += \"<td>\"+"+getModelName()+"."+field+"+\"</td>\";\n");
         }
         pageToSetValueSB.append("                        "+getModelName()+"Html += \"<td><div class='oper'>\";\n");
         pageToSetValueSB.append("                        "+getModelName()+"Html += \"<a href='javascript:void(0)' " +
                 "class='btn btn-success btn-xs' value=\"+"+getModelName()+".id+\"><span class='glyphicon glyphicon-pencil'></span></a>\";\n");
         pageToSetValueSB.append("                        "+getModelName()+"Html " +
-                "+= \"<a href='javascript:void(0)' class='btn btn-danger btn-xs' value=\"+"+getModelName()+".id>\"" +
+                "+= \"<a href='javascript:void(0)' class='btn btn-danger btn-xs' value=\"+"+getModelName()+".id+\">" +
                 "<span class='glyphicon glyphicon-remove'></span></a>\";\n");
+        pageToSetValueSB.append("                        "+getModelName()+"Html += \"</div>\"\n");
+        pageToSetValueSB.append("                        "+getModelName()+"Html += \"</td>\";");
+
         jsTemplate = jsTemplate.replaceAll("##pageToSetValue",pageToSetValueSB.toString());
 
         //7、替换新增部分

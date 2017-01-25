@@ -199,6 +199,30 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         eachModel.setModelName(lowModelShortName);
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
             if (!introspectedColumn.getActualColumnName().equals("id")){
+
+                switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
+                    case 1:
+                        //same as 2
+                    case 2:
+                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                        break;
+                    case 4:
+                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                        break;
+                    case 3:
+                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                        break;
+                    case 5:
+                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                        break;
+                    default:
+                        break;
+                }
+
+                if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
+                    continue;
+                }
+
                 Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
                 parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
                 method.addParameter(parameter);
@@ -241,6 +265,22 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         }
 
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
+            switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
+                case 3:
+                    method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                    break;
+                case 5:
+                    method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                    break;
+                default:
+                    break;
+            }
+
+            if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
+                continue;
+            }
+
+            //not update
             Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
             parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
             method.addParameter(parameter);
@@ -249,6 +289,9 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
             method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
             method.addBodyLine("}");
         }
+
+
+
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".update("+lowModelShortName+");"); //$NON-NLS-1$
         method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
@@ -281,5 +324,22 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addBodyLine("return Root.getRootOKAndSimpleMsg().setData(pageResult).toJsonString();"); //$NON-NLS-1$
         topLevelClass.addMethod(method);
     }
-
+    private int isDatabaseFileds(String field){
+        if (field.toLowerCase().equals("creationtime")){
+            return 1;
+        }
+        if (field.toLowerCase().equals("createdtime")){
+            return 2;
+        }
+        if (field.toLowerCase().equals("updatedtime")){
+            return 3;
+        }
+        if (field.toLowerCase().equals("createdby")){
+            return 4;
+        }
+        if (field.toLowerCase().equals("updatedby")){
+            return 5;
+        }
+        return 0;
+    }
 }
