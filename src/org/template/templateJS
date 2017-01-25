@@ -1,0 +1,191 @@
+$(".trValueList").html("");
+
+var colomsNum = ##eachRomColoms;
+$(function(){
+    refreshTable();
+    $(".glyphicon-search").click(function(){
+        refreshTable();
+    });
+
+    $('#searchName').bind('keypress',function(event){
+        if(event.keyCode == "13"){
+            refreshTable();
+        }
+    });
+
+    $(".btn-add-record").click(function(){
+        $("#myModalLabel").text("添加");
+##modalValueInit
+        $('#AddOrUpdateModal').modal('show');
+        $(".btn-edit-info").unbind("click");
+        $(".btn-edit-info").click(function(){
+            add##ModelName();
+        });
+    });
+
+});
+
+function add##ModelName(){
+##getAddValueFromModal
+    $.ajax({
+        url: "../../##LowModelName",
+        dataType: "json",
+        data: json,
+        type: "POST",
+        error : function(){
+            alert("网络错误，请重试");
+        },
+        success: function (data) {
+            $('#AddOrUpdateModal').modal('hide');
+            if (data.status == 1){
+                alert("添加成功");
+            }else{
+                alert("添加失败");
+            }
+            refreshTable();
+        }
+    });
+}
+
+function update##ModelName(id){
+##getAddValueFromModal
+    $.ajax({
+        url: "../../##LowModelName/"+id,
+        dataType: "json",
+        data: json,
+        type: "POST",
+        error : function(){
+            alert("网络错误，请重试");
+        },
+        success: function (data) {
+            $('#AddOrUpdateModal').modal('hide');
+            if (data.status == 1){
+                alert("修改成功");
+            }else{
+                alert("修改失败");
+            }
+            refreshTable();
+        }
+    });
+}
+
+function initButton(){
+    //修改
+    $("a.btn-success").each(function(){
+##modalValueInit
+        $(this).unbind("click");
+        $(this).click(function(){
+            var id = $(this).attr("value");
+            $.ajax({
+                url: "../../##LowModelName/"+id,
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    var ##LowModelName = data.data;
+                    $("#myModalLabel").text("修改");
+##QueryBeforeUpdate
+                    $('#AddOrUpdateModal').modal('show');
+                    $(".btn-edit-info").unbind("click");
+                    $(".btn-edit-info").click(function(){
+                        update##ModelName(id);
+                    });
+                }
+            });
+        })
+    });
+    //删除
+    $("a.btn-danger").each(function(){
+        $(this).unbind("click");
+        $(this).click(function(){
+            if (confirm("确认删除？")){
+                var id = $(this).attr("value");
+                $.ajax({
+                    url: "../../##LowModelName/"+id,
+                    dataType: "json",
+                    type: "DELETE",
+                    success: function (data) {
+                        if (data.status == 1){
+                            var ##LowModelNameHtml = "";
+                            var ##LowModelNameList = data.data;
+                            if (##LowModelNameList == null || ##LowModelNameList.length == 0){
+                                ##LowModelNameHtml = "<tr><td colspan='"+colomsNum+"' align='center'>无记录信息</td></tr>";
+                            }
+                            $(".trValueList").html(##LowModelNameHtml);
+                            initButton();
+                        }else{
+                            $(".trValueList").html("<td>无记录信息</td>");
+                        }
+                        refreshTable();
+                    }
+                });
+            }
+        });
+    });
+}
+
+function refreshTable(){
+    var searchName = $("#searchName").val();
+
+    searchName = $.trim(searchName);
+
+    var pageIndex = $("#pageIndex").val();
+    if (pageIndex == null||pageIndex==""){
+        pageIndex = 1;
+    }
+    var condition = "";
+    if(searchName != null && searchName != "" ){
+        condition = searchName;
+    }
+    var json = {
+        searchName : condition,
+        pageIndex : pageIndex
+    };
+    $.ajax({
+        url: "../../##LowModelNames",
+        dataType: "json",
+        data:json,
+        type: "GET",
+        success: function (data) {
+            if (data.status == 1){
+                var ##LowModelNameHtml = "";
+                var ##LowModelNameList = data.data.items;
+                if (##LowModelNameList == null || ##LowModelNameList.length == 0){
+                    ##LowModelNameHtml = "<tr><td colspan='4' align='center'>无记录信息</td></tr>";
+                } else {
+                    for (var index in ##LowModelNameList){
+                        var ##LowModelName = ##LowModelNameList[index];
+                        //var createDate = new Date(##LowModelName.creationtime).format("yyyy-MM-dd hh:mm:ss");
+##pageToSetValue
+                        ##LowModelNameHtml += "</tr>";
+                    }
+                }
+                $(".trValueList").html(##LowModelNameHtml);
+                $("#pageIndex").val(data.data.pageIndex);
+                $("#pageToal").val(data.data.totalPage);
+                $("#pageEachNum").val(data.data.limit);
+            }else{
+                $(".trValueList").html("<td colspan='"+colomsNum+"' align='center'>无记录信息</td>");
+            }
+            initButton();
+            //分页
+            var page=$("#page");
+            var options = {
+                currentPage :  $("#pageIndex").val(),
+                totalPages : $("#pageToal").val(),
+                numberOfPages : 5,
+                onPageClicked : function(event, originalEvent, type, page){
+                    $("#page").hide();
+                    $("#pageIndex").val(page);
+                    $("#page").find("ul").addClass("pagination ").addClass("pagination-sm");
+                    refreshTable();
+                }
+            }
+            $("#page").bootstrapPaginator(options);
+            $("#page").find("ul").addClass("pagination").addClass("pagination-sm");
+            $("#page").show();
+        },
+        error:function(e){
+            console.info("get ##LowModelName list error",e);
+        }
+    });
+}
