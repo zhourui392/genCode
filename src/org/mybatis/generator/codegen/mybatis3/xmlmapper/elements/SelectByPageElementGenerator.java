@@ -30,10 +30,10 @@ public class SelectByPageElementGenerator extends
         sb.append("select <include refid=\"BaseT_Column_List\" />\n");
 
         sb.append("     from " + introspectedTable
-                .getAliasedFullyQualifiedTableNameAtRuntime()+" t1\n"); //$NON-NLS-1$
+                .getAliasedFullyQualifiedTableNameAtRuntime()+" t\n"); //$NON-NLS-1$
 
         sb.append("     where 1=1 \n");
-        sb.append("     order by id desc \n");
+        sb.append("     order by t.id desc \n");
         sb.append("     LIMIT #{pageQuery.limit} OFFSET #{pageQuery.pageOffset}");
         answer.addElement(new TextElement(sb.toString()));
         parentElement.addElement(answer);

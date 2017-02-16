@@ -71,7 +71,8 @@ public class EachModel {
         //4、替换修改模态框  ?
 
         //输出Html
-        File directory =  new File("src/com/teleus/html");
+        String basePackageDir = GenerCode.basePackage.replaceAll("\\.","/");
+        File directory =  new File("src/"+basePackageDir+"/html");
         if (!directory.exists()){
             directory.mkdirs();
         }
@@ -156,7 +157,7 @@ public class EachModel {
 
         //输出JS
         //输出Html
-        File jsDirectory =  new File("src/com/teleus/js");
+        File jsDirectory =  new File("src/"+basePackageDir+"/js");
         if (!jsDirectory.exists()){
             jsDirectory.mkdirs();
         }

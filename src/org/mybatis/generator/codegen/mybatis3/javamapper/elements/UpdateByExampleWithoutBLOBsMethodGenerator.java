@@ -18,6 +18,7 @@ package org.mybatis.generator.codegen.mybatis3.javamapper.elements;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.zr.Commons;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
@@ -63,7 +64,7 @@ public class UpdateByExampleWithoutBLOBsMethodGenerator extends
         importedTypes.add(exampleType);
 
         importedTypes.add(new FullyQualifiedJavaType(
-                "org.apache.ibatis.annotations.Param")); //$NON-NLS-1$
+                Commons.NAME_IBATIS_PARAM)); //$NON-NLS-1$
 
         context.getCommentGenerator().addGeneralMethodComment(method,
                 introspectedTable);

@@ -1,5 +1,6 @@
 package org.mybatis.generator.codegen.mybatis3.controller;
 
+import com.zr.Commons;
 import com.zr.EachModel;
 import com.zr.GenerCode;
 import org.mybatis.generator.api.CommentGenerator;
@@ -64,7 +65,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
         FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(baseRecordType);
         FullyQualifiedJavaType serviceType = new FullyQualifiedJavaType(myBatis3JavaServiceType);
-        String baseController = controllerType.getPackageName()+".BaseController";
+        String baseController = Commons.NAME_BASE_CONTROLLER;
         FullyQualifiedJavaType baseControllerType = new FullyQualifiedJavaType(baseController);
 
         TopLevelClass topLevelClass = new TopLevelClass(controllerType);
@@ -110,6 +111,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
         //add imports
         Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
+        fullyQualifiedJavaTypes.add(baseControllerType);
         fullyQualifiedJavaTypes.add(modelType);
         fullyQualifiedJavaTypes.add(serviceType);
         FullyQualifiedJavaType controllerAnnotationType = new FullyQualifiedJavaType(Controller.class.getName());
@@ -127,14 +129,14 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(responseBodyType);
         FullyQualifiedJavaType resourceType = new FullyQualifiedJavaType(Resource.class.getName());
         fullyQualifiedJavaTypes.add(resourceType);
-        FullyQualifiedJavaType rootType = new FullyQualifiedJavaType(controllerType.getPackageName().replace("controller","")+"common.util.Root");
+        FullyQualifiedJavaType rootType = new FullyQualifiedJavaType(Commons.NAME_ROOT);
         fullyQualifiedJavaTypes.add(rootType);
         fullyQualifiedJavaTypes.add(loggerType);
         fullyQualifiedJavaTypes.add(loggerFactoryType);
         fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getDateInstance());
-        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(controllerType.getPackageName().replace("controller","")+"common.util.page.PageQuery");
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
         fullyQualifiedJavaTypes.add(pageQueryType);
-        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(controllerType.getPackageName().replace("controller","")+"common.util.page.PageResult");
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT);
         fullyQualifiedJavaTypes.add(pageResultType);
 
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
@@ -232,6 +234,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
             }
         }
         GenerCode.eachModels.add(eachModel);
+        GenerCode.basePackage = modelType.getPackageName().replace(".entity","");
 
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".add("+lowModelShortName+");"); //$NON-NLS-1$

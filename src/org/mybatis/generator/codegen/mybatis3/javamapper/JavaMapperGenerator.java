@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.zr.Commons;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
@@ -114,28 +115,17 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         interfaze.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(interfaze);
 
-        String rootInterface = introspectedTable
-            .getTableConfigurationProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
-        if (!stringHasValue(rootInterface)) {
-            rootInterface = context.getJavaClientGeneratorConfiguration()
-                .getProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
-        }
-
-        String cc = myBatis3JavaMapperType.substring(0, myBatis3JavaMapperType.lastIndexOf("."));
-		String bb = myBatis3JavaMapperType.substring(myBatis3JavaMapperType.lastIndexOf(".")+1,myBatis3JavaMapperType.length());
-		
-		String myBatis3JavaMapperTypeParent = cc+".base.Base"+bb;
-        rootInterface =  myBatis3JavaMapperTypeParent;
+        String rootInterface =  Commons.NAME_BASE_MAPPER;
         if (stringHasValue(rootInterface)) {
             FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
                     rootInterface);
             interfaze.addSuperInterface(fqjt);
             Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
             fullyQualifiedJavaTypes.add(fqjt);
-            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(type.getPackageName().replace("mapper","")+"common.util.page.PageQuery");
+            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
             fullyQualifiedJavaTypes.add(pageQueryType);
             fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
-            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType("org.apache.ibatis.annotations.Param");
+            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType(Commons.NAME_IBATIS_PARAM);
             fullyQualifiedJavaTypes.add(paramType);
             fullyQualifiedJavaTypes.add(baseRecordType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
@@ -166,7 +156,7 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
                 .getProperty(PropertyRegistry.ANY_ROOT_INTERFACE);
         }
 
-        rootInterface =cc+".base.BaseMapper<"+type.getShortName().replace("Mapper", "").replace("Base", "")+">";
+        rootInterface = Commons.NAME_BASE_MAPPER+"<"+type.getShortName().replace("Mapper", "").replace("Base", "")+">";
         if (stringHasValue(rootInterface)) {
             FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
                     rootInterface);
@@ -196,7 +186,7 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
                                     FullyQualifiedJavaType modelType) {
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
-        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(mapperType.getPackageName().replace("mapper","")+"common.util.page.PageQuery");
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
         FullyQualifiedJavaType returnFqj = new FullyQualifiedJavaType("List<"+modelType.getShortName()+">");
         method.setReturnType(returnFqj);
         method.setName("getListByConditions");

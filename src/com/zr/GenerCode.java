@@ -17,6 +17,7 @@ import org.mybatis.generator.internal.util.StringUtility;
 
 public class GenerCode {
 	public static List<EachModel> eachModels = new ArrayList<>();
+	public static String basePackage;
 	public static void main(String[] args) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
 		List<String> warnings = new ArrayList<>();
 		boolean overwrite = true;

@@ -16,6 +16,7 @@
 
 package org.mybatis.generator.codegen.mybatis3.service;
 
+import com.zr.Commons;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
@@ -80,7 +81,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         String myBatis3JavaServiceImpl = interfaceType.getPackageName()+".impl."+interfaceType.getShortName()+"Impl";
         FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(baseRecordType);
         FullyQualifiedJavaType implType = new FullyQualifiedJavaType(myBatis3JavaServiceImpl);
-        String baseServiceImpl = interfaceType.getPackageName()+".base.impl.BaseServiceImpl<"+modelType.getShortName()+">";
+        String baseServiceImpl = Commons.NAME_BASE_SERVICEIMPL + "<"+modelType.getShortName()+">";
         FullyQualifiedJavaType baseServiceImplType = new FullyQualifiedJavaType(baseServiceImpl);
         FullyQualifiedJavaType mapperType = new FullyQualifiedJavaType(myBatis3JavaMapperType);
 
@@ -122,7 +123,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         commentGenerator.addJavaFileComment(topLevelClass);
 
         // add override method
-        String baseMapper = mapperType.getPackageName()+".base.BaseMapper<"+modelType.getShortName()+">";
+        String baseMapper = Commons.NAME_BASE_MAPPER + "<"+modelType.getShortName()+">";
         FullyQualifiedJavaType baseMapperType = new FullyQualifiedJavaType(baseMapper);
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
@@ -148,9 +149,9 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(baseMapperType);
         fullyQualifiedJavaTypes.add(loggerType);
         fullyQualifiedJavaTypes.add(loggerFactoryType);
-        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(implType.getPackageName().replace("service.impl","")+"common.util.page.PageQuery");
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
         fullyQualifiedJavaTypes.add(pageQueryType);
-        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(implType.getPackageName().replace("service.impl","")+"common.util.page.PageResult");
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT);
         fullyQualifiedJavaTypes.add(pageResultType);
         fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
@@ -168,7 +169,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         interfaze.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(interfaze);
 
-        String rootInterface = serviceType.getPackageName()+".base.BaseService<"+modelType.getShortName()+">";
+        String rootInterface = Commons.NAME_BASE_SERVICE + "<"+modelType.getShortName()+">";
         if (stringHasValue(rootInterface)) {
             FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
                     rootInterface);
@@ -177,25 +178,25 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
             Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
             fullyQualifiedJavaTypes.add(fqjt);
             fullyQualifiedJavaTypes.add(modelType);
-            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageQuery");
+            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
             fullyQualifiedJavaTypes.add(pageQueryType);
-            FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageResult");
+            FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT);
             fullyQualifiedJavaTypes.add(pageResultType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 
-        addGetByPageMethod(interfaze,serviceType,modelType);
+        addGetByPageMethod(interfaze,modelType);
 
         return interfaze;
 	}
 
 
-    protected void addGetByPageMethod(Interface interfaze,FullyQualifiedJavaType serviceType,
+    protected void addGetByPageMethod(Interface interfaze,
                                       FullyQualifiedJavaType modelType) {
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
-        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageResult<"+modelType.getShortName()+">");
-        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageQuery");
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT+"<"+modelType.getShortName()+">");
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
         method.setReturnType(pageResultType);
         method.setName("get"+modelType.getShortName()+"sByPage");
         method.addParameter(new Parameter(pageQueryType, "pageQuery")); //$NON-NLS-1$
@@ -208,8 +209,8 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
 
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
-        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageResult<"+modelType.getShortName()+">");
-        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(serviceType.getPackageName().replace("service","")+"common.util.page.PageQuery");
+        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT+"<"+modelType.getShortName()+">");
+        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
         method.setReturnType(pageResultType);
         method.setName("get"+modelType.getShortName()+"sByPage");
         method.addAnnotation("@Override");
