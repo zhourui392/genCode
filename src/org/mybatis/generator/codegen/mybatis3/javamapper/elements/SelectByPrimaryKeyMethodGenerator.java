@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.zr.Commons;
+import org.apache.ibatis.annotations.Param;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
@@ -69,8 +70,7 @@ public class SelectByPrimaryKeyMethodGenerator extends
                     .getPrimaryKeyColumns();
             boolean annotate = introspectedColumns.size() > 1;
             if (annotate) {
-                importedTypes.add(new FullyQualifiedJavaType(
-                        Commons.NAME_IBATIS_PARAM)); //$NON-NLS-1$
+                importedTypes.add(new FullyQualifiedJavaType(Param.class.getName())); //$NON-NLS-1$
             }
             StringBuilder sb = new StringBuilder();
             for (IntrospectedColumn introspectedColumn : introspectedColumns) {
