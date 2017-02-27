@@ -13,6 +13,7 @@ import java.util.List;
 public class EachModel {
     private String modelName;
     private List<String> fileds = new ArrayList<>();
+    private List<String> filedMemos = new ArrayList<>();
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
@@ -170,6 +171,10 @@ public class EachModel {
         if (!isFourFileds(filed)){
             fileds.add(filed);
         }
+    }
+
+    public void addFiledMemo(String memo) {
+        filedMemos.add(memo);
     }
 
     @Override

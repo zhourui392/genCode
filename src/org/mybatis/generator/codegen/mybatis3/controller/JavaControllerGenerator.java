@@ -14,10 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
@@ -41,26 +38,43 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         List<IntrospectedColumn> introspectedColumns = introspectedTable.getBaseColumns();
         List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
 
+        Properties tableTDProperties = introspectedTable.getTableConfiguration().getProperties();
+        Enumeration<Object> keys = tableTDProperties.keys();
+        FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(baseRecordType);
+        String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
+
+
+        EachModel eachModel = new EachModel();
+        eachModel.setModelName(lowModelShortName);
+        for (IntrospectedColumn introspectedColumn : introspectedColumns){
+            if (tableTDProperties.get(introspectedColumn.getActualColumnName()) != null){
+                String actualColumn = introspectedColumn.getActualColumnName();
+                String value = tableTDProperties.getProperty(actualColumn);
+                eachModel.addFiled(actualColumn);
+                eachModel.addFiledMemo(value);
+            }
+        }
+        GenerCode.eachModels.add(eachModel);
+        GenerCode.basePackage = modelType.getPackageName().replace(".entity","");
+
         List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
 
         //生成Controller
         TopLevelClass topLevelClass = geneTopLevelClass(commentGenerator,
-                myBatis3JavaControllerType,baseRecordType,serviceType,introspectedColumns,primaryKeyColumns);
+                myBatis3JavaControllerType,baseRecordType,serviceType,introspectedColumns,primaryKeyColumns,tableTDProperties);
 
         if (context.getPlugins().modelExampleClassGenerated(
                 topLevelClass, introspectedTable)) {
             answer.add(topLevelClass);
         }
-
-
         return answer;
     }
 
     private TopLevelClass geneTopLevelClass(CommentGenerator commentGenerator,
                                             String myBatis3JavaControllerType,
-                                            String baseRecordType,String myBatis3JavaServiceType,
+                                            String baseRecordType, String myBatis3JavaServiceType,
                                             List<IntrospectedColumn> introspectedColumns,
-                                            List<IntrospectedColumn> primaryKeyColumns){
+                                            List<IntrospectedColumn> primaryKeyColumns, Properties tableTDProperties){
         FullyQualifiedJavaType controllerType = new FullyQualifiedJavaType(myBatis3JavaControllerType);
 
         FullyQualifiedJavaType modelType = new FullyQualifiedJavaType(baseRecordType);
@@ -102,11 +116,13 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         topLevelClass.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(topLevelClass);
 
-        //TODO add method
+        //generate Fields
+
+
         addGetByIdMethod(commentGenerator,topLevelClass,modelType,serviceType);
         addDeleteByIdMethod(commentGenerator,topLevelClass,modelType,serviceType);
-        addAddMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns);
-        addUpdateMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns,primaryKeyColumns);
+        addAddMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns,tableTDProperties);
+        addUpdateMethod(commentGenerator,topLevelClass,modelType,serviceType,introspectedColumns,primaryKeyColumns,tableTDProperties);
         addGetByPageMethod(commentGenerator,topLevelClass,modelType,serviceType);
 
         //add imports
@@ -187,7 +203,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
     protected void addAddMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
                                 FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType,
-                                List<IntrospectedColumn> introspectedColumns) {
+                                List<IntrospectedColumn> introspectedColumns,Properties tableTDProperties) {
         String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
@@ -197,44 +213,42 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"\", method= RequestMethod.POST)");
 
         method.addBodyLine(modelType.getShortName() + " "+lowModelShortName+" = new "+modelType.getShortName() +"();");
-        EachModel eachModel = new EachModel();
-        eachModel.setModelName(lowModelShortName);
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
             if (!introspectedColumn.getActualColumnName().equals("id")){
+                if (tableTDProperties.getProperty(introspectedColumn.getActualColumnName()) != null){
+                    switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
+                        case 1:
+                            //same as 2
+                        case 2:
+                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                            break;
+                        case 4:
+                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                            break;
+                        case 3:
+                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                            break;
+                        case 5:
+                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                            break;
+                        default:
+                            break;
+                    }
 
-                switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
-                    case 1:
-                        //same as 2
-                    case 2:
-                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
-                        break;
-                    case 4:
-                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
-                        break;
-                    case 3:
-                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
-                        break;
-                    case 5:
-                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
-                        break;
-                    default:
-                        break;
+                    if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
+                        continue;
+                    }
+
+                    Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
+                    parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
+                    method.addParameter(parameter);
+
+                    method.addBodyLine(lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
+
                 }
-
-                if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
-                    continue;
-                }
-
-                Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
-                parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
-                method.addParameter(parameter);
-
-                method.addBodyLine(lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
-                eachModel.addFiled(introspectedColumn.getActualColumnName());
             }
         }
-        GenerCode.eachModels.add(eachModel);
-        GenerCode.basePackage = modelType.getPackageName().replace(".entity","");
+
 
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".add("+lowModelShortName+");"); //$NON-NLS-1$
@@ -247,7 +261,8 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
     protected void addUpdateMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
                                 FullyQualifiedJavaType modelType, FullyQualifiedJavaType serviceType,
-                                List<IntrospectedColumn> introspectedColumns,List<IntrospectedColumn> primaryKeyColumns) {
+                                List<IntrospectedColumn> introspectedColumns,List<IntrospectedColumn> primaryKeyColumns,
+                                   Properties tableTDProperties) {
         String lowModelShortName = StringUtility.lowFirstString(modelType.getShortName());
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
@@ -268,29 +283,31 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         }
 
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
-            switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
-                case 3:
-                    method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
-                    break;
-                case 5:
-                    method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
-                    break;
-                default:
-                    break;
+            if (tableTDProperties.getProperty(introspectedColumn.getActualColumnName()) != null){
+                switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
+                    case 3:
+                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                        break;
+                    case 5:
+                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                        break;
+                    default:
+                        break;
+                }
+
+                if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
+                    continue;
+                }
+
+                //not update
+                Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
+                parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
+                method.addParameter(parameter);
+
+                method.addBodyLine("if ("+introspectedColumn.getActualColumnName()+" != null){");
+                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
+                method.addBodyLine("}");
             }
-
-            if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
-                continue;
-            }
-
-            //not update
-            Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
-            parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
-            method.addParameter(parameter);
-
-            method.addBodyLine("if ("+introspectedColumn.getActualColumnName()+" != null){");
-            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
-            method.addBodyLine("}");
         }
 
 
