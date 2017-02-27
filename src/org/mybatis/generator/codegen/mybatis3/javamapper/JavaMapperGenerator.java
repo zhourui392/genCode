@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.zr.Commons;
+import org.apache.ibatis.annotations.Param;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
@@ -125,7 +126,7 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
             fullyQualifiedJavaTypes.add(pageQueryType);
             fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
-            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType(Commons.NAME_IBATIS_PARAM);
+            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType(Param.class.getName());
             fullyQualifiedJavaTypes.add(paramType);
             fullyQualifiedJavaTypes.add(baseRecordType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);

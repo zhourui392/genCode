@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.zr.Commons;
+import org.apache.ibatis.annotations.Param;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
@@ -64,7 +65,7 @@ public class UpdateByExampleWithoutBLOBsMethodGenerator extends
         importedTypes.add(exampleType);
 
         importedTypes.add(new FullyQualifiedJavaType(
-                Commons.NAME_IBATIS_PARAM)); //$NON-NLS-1$
+                Param.class.getName())); //$NON-NLS-1$
 
         context.getCommentGenerator().addGeneralMethodComment(method,
                 introspectedTable);
