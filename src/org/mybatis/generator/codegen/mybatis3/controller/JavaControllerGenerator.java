@@ -215,37 +215,14 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addBodyLine(modelType.getShortName() + " "+lowModelShortName+" = new "+modelType.getShortName() +"();");
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
             if (!introspectedColumn.getActualColumnName().equals("id")){
-                if (tableTDProperties.getProperty(introspectedColumn.getActualColumnName()) != null){
-                    switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
-                        case 1:
-                            //same as 2
-                        case 2:
-                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
-                            break;
-                        case 4:
-                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
-                            break;
-                        case 3:
-                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
-                            break;
-                        case 5:
-                            method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
-                            break;
-                        default:
-                            break;
+                if (!tableTDProperties.isEmpty()){
+                    if (tableTDProperties.getProperty(introspectedColumn.getActualColumnName()) != null){
+                        addAddParamsOnController(lowModelShortName, method, introspectedColumn);
                     }
-
-                    if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
-                        continue;
-                    }
-
-                    Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
-                    parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
-                    method.addParameter(parameter);
-
-                    method.addBodyLine(lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
-
+                }else {
+                    addAddParamsOnController(lowModelShortName, method, introspectedColumn);
                 }
+
             }
         }
 
@@ -257,6 +234,37 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);
+    }
+
+    private void addAddParamsOnController(String lowModelShortName, Method method, IntrospectedColumn introspectedColumn) {
+        switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
+            case 1:
+                //same as 2
+            case 2:
+                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                break;
+            case 4:
+                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                break;
+            case 3:
+                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                break;
+            case 5:
+                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                break;
+            default:
+                break;
+        }
+
+        if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
+            return;
+        }
+
+        Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
+        parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
+        method.addParameter(parameter);
+
+        method.addBodyLine(lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
     }
 
     protected void addUpdateMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
@@ -283,34 +291,14 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         }
 
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
-            if (tableTDProperties.getProperty(introspectedColumn.getActualColumnName()) != null){
-                switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
-                    case 3:
-                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
-                        break;
-                    case 5:
-                        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
-                        break;
-                    default:
-                        break;
+            if (!tableTDProperties.isEmpty()){
+                if (tableTDProperties.getProperty(introspectedColumn.getActualColumnName()) != null){
+                    addUpdateParamsOnController(lowModelShortName, method, introspectedColumn);
                 }
-
-                if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
-                    continue;
-                }
-
-                //not update
-                Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
-                parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
-                method.addParameter(parameter);
-
-                method.addBodyLine("if ("+introspectedColumn.getActualColumnName()+" != null){");
-                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
-                method.addBodyLine("}");
+            }else{
+                addUpdateParamsOnController(lowModelShortName, method, introspectedColumn);
             }
         }
-
-
 
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".update("+lowModelShortName+");"); //$NON-NLS-1$
@@ -319,6 +307,32 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);
+    }
+
+    private void addUpdateParamsOnController(String lowModelShortName, Method method, IntrospectedColumn introspectedColumn) {
+        switch (isDatabaseFileds(introspectedColumn.getActualColumnName())){
+            case 3:
+                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(new Date());");
+                break;
+            case 5:
+                method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"(\"ToBeChanged\");");
+                break;
+            default:
+                break;
+        }
+
+        if (isDatabaseFileds(introspectedColumn.getActualColumnName()) != 0){
+            return;
+        }
+
+        //not update
+        Parameter parameter = new Parameter(introspectedColumn.getFullyQualifiedJavaType(),introspectedColumn.getActualColumnName());
+        parameter.addAnnotation("@RequestParam(value = \""+introspectedColumn.getActualColumnName()+"\")");
+        method.addParameter(parameter);
+
+        method.addBodyLine("if ("+introspectedColumn.getActualColumnName()+" != null){");
+        method.addBodyLine(""+lowModelShortName+".set"+ StringUtility.upperFirstString(introspectedColumn.getActualColumnName())+"("+introspectedColumn.getActualColumnName()+");");
+        method.addBodyLine("}");
     }
 
     protected void addGetByPageMethod(CommentGenerator commentGenerator, TopLevelClass topLevelClass,
