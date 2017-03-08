@@ -8,4 +8,4 @@ Mybatis的分页:使用最基本的分页
 Controller以及基本的restful接口:增删改查
 JS和HTML：模版生成增删改、分页。
 
-TODO:生成Junit测试
+放弃项目后期的开发了，发现有个更简洁的项目mybatis-plus
