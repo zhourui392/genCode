@@ -51,7 +51,7 @@ public class CountByExampleMethodGenerator extends
         method.addParameter(new Parameter(fqjt, "example")); //$NON-NLS-1$
         context.getCommentGenerator().addGeneralMethodComment(method,
                 introspectedTable);
-
+        method.addAnnotation("@Override");
         addMapperAnnotations(interfaze, method);
         
         if (context.getPlugins().clientCountByExampleMethodGenerated(method,

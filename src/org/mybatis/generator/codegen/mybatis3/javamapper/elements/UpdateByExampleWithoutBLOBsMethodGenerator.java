@@ -63,7 +63,7 @@ public class UpdateByExampleWithoutBLOBsMethodGenerator extends
         method.addParameter(new Parameter(exampleType,
                 "example", "@Param(\"example\")")); //$NON-NLS-1$ //$NON-NLS-2$
         importedTypes.add(exampleType);
-
+        method.addAnnotation("@Override");
         importedTypes.add(new FullyQualifiedJavaType(
                 Param.class.getName())); //$NON-NLS-1$
 

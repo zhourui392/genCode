@@ -47,7 +47,14 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         EachModel eachModel = new EachModel();
         eachModel.setModelName(lowModelShortName);
         for (IntrospectedColumn introspectedColumn : introspectedColumns){
-            if (tableTDProperties.get(introspectedColumn.getActualColumnName()) != null){
+            if (tableTDProperties.size() != 0){
+                if (tableTDProperties.get(introspectedColumn.getActualColumnName()) != null){
+                    String actualColumn = introspectedColumn.getActualColumnName();
+                    String value = tableTDProperties.getProperty(actualColumn);
+                    eachModel.addFiled(actualColumn);
+                    eachModel.addFiledMemo(value);
+                }
+            }else {
                 String actualColumn = introspectedColumn.getActualColumnName();
                 String value = tableTDProperties.getProperty(actualColumn);
                 eachModel.addFiled(actualColumn);

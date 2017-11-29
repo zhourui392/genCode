@@ -48,7 +48,7 @@ public class UpdateByPrimaryKeyWithoutBLOBsMethodGenerator extends
         method.setReturnType(FullyQualifiedJavaType.getIntInstance());
         method.setName(introspectedTable.getUpdateByPrimaryKeyStatementId());
         method.addParameter(new Parameter(parameterType, "record")); //$NON-NLS-1$
-
+        method.addAnnotation("@Override");
         context.getCommentGenerator().addGeneralMethodComment(method,
                 introspectedTable);
 

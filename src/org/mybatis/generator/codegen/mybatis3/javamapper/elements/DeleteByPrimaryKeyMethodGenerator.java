@@ -86,6 +86,8 @@ public class DeleteByPrimaryKeyMethodGenerator extends
             }
         }
 
+        method.addAnnotation("@Override");
+
         context.getCommentGenerator().addGeneralMethodComment(method,
                 introspectedTable);
 

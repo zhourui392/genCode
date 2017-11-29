@@ -74,34 +74,34 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
 
         String myBatis3JavaMapperType = introspectedTable.getMyBatis3JavaMapperType();
         String baseRecordType = introspectedTable.getBaseRecordType();
-        
+
+        List<CompilationUnit> answer = new ArrayList<>();
+
+//		Interface interfaze2 = interfacebase(commentGenerator, myBatis3JavaMapperType);
+//
+//        if (context.getPlugins().clientGenerated(interfaze2, null,
+//                introspectedTable)) {
+//            answer.add(interfaze2);
+//        }
+//
+//        List<CompilationUnit> extraCompilationUnits2 = getExtraCompilationUnits();
+//        if (extraCompilationUnits2 != null) {
+//            answer.addAll(extraCompilationUnits2);
+//        }
+
         Interface interfaze = interfaceout(commentGenerator,
-				myBatis3JavaMapperType, baseRecordType);
-                
-        List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
-        
+                myBatis3JavaMapperType, baseRecordType);
+
         if (context.getPlugins().clientGenerated(interfaze, null,
                 introspectedTable)) {
             answer.add(interfaze);
         }
-        
+
         List<CompilationUnit> extraCompilationUnits = getExtraCompilationUnits();
         if (extraCompilationUnits != null) {
             answer.addAll(extraCompilationUnits);
         }
-        
-        
-		Interface interfaze2 = interfacebase(commentGenerator, myBatis3JavaMapperType);
 
-        if (context.getPlugins().clientGenerated(interfaze2, null,
-                introspectedTable)) {
-            answer.add(interfaze2);
-        }
-        
-        List<CompilationUnit> extraCompilationUnits2 = getExtraCompilationUnits();
-        if (extraCompilationUnits2 != null) {
-            answer.addAll(extraCompilationUnits2);
-        }
 
         return answer;
     }
@@ -116,7 +116,7 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         interfaze.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(interfaze);
 
-        String rootInterface =  Commons.NAME_BASE_MAPPER;
+        String rootInterface =  Commons.NAME_BASE_MAPPER+"<"+type.getShortName().replace("Mapper", "").replace("Base", "")+">";
         if (stringHasValue(rootInterface)) {
             FullyQualifiedJavaType fqjt = new FullyQualifiedJavaType(
                     rootInterface);

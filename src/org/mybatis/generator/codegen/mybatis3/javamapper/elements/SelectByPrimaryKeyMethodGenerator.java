@@ -55,7 +55,7 @@ public class SelectByPrimaryKeyMethodGenerator extends
         importedTypes.add(returnType);
 
         method.setName(introspectedTable.getSelectByPrimaryKeyStatementId());
-
+        method.addAnnotation("@Override");
         if (!isSimple && introspectedTable.getRules().generatePrimaryKeyClass()) {
             FullyQualifiedJavaType type = new FullyQualifiedJavaType(
                     introspectedTable.getPrimaryKeyType());
@@ -89,7 +89,7 @@ public class SelectByPrimaryKeyMethodGenerator extends
                 method.addParameter(parameter);
             }
         }
-        
+
         addMapperAnnotations(interfaze, method);
 
         context.getCommentGenerator().addGeneralMethodComment(method,

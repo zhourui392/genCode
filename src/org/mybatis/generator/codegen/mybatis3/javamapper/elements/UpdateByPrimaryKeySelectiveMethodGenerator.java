@@ -57,7 +57,7 @@ public class UpdateByPrimaryKeySelectiveMethodGenerator extends
         method.setName(introspectedTable
                 .getUpdateByPrimaryKeySelectiveStatementId());
         method.addParameter(new Parameter(parameterType, "record")); //$NON-NLS-1$
-
+        method.addAnnotation("@Override");
         context.getCommentGenerator().addGeneralMethodComment(method,
                 introspectedTable);
 

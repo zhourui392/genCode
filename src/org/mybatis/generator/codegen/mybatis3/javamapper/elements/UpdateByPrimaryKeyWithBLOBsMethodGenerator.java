@@ -58,7 +58,7 @@ public class UpdateByPrimaryKeyWithBLOBsMethodGenerator extends
         method.setName(introspectedTable
             .getUpdateByPrimaryKeyWithBLOBsStatementId());
         method.addParameter(new Parameter(parameterType, "record")); //$NON-NLS-1$
-
+        method.addAnnotation("@Override");
         context.getCommentGenerator().addGeneralMethodComment(method,
                 introspectedTable);
 
