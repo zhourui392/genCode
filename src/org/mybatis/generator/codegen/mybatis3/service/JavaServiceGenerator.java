@@ -178,10 +178,10 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
             Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
             fullyQualifiedJavaTypes.add(fqjt);
             fullyQualifiedJavaTypes.add(modelType);
-            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
-            fullyQualifiedJavaTypes.add(pageQueryType);
-            FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT);
-            fullyQualifiedJavaTypes.add(pageResultType);
+//            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
+//            fullyQualifiedJavaTypes.add(pageQueryType);
+//            FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT);
+//            fullyQualifiedJavaTypes.add(pageResultType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 

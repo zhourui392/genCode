@@ -123,11 +123,11 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             interfaze.addSuperInterface(fqjt);
             Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
             fullyQualifiedJavaTypes.add(fqjt);
-            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
-            fullyQualifiedJavaTypes.add(pageQueryType);
+//            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
+//            fullyQualifiedJavaTypes.add(pageQueryType);
             fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
-            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType(Param.class.getName());
-            fullyQualifiedJavaTypes.add(paramType);
+//            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType(Param.class.getName());
+//            fullyQualifiedJavaTypes.add(paramType);
             fullyQualifiedJavaTypes.add(baseRecordType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
