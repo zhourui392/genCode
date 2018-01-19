@@ -1,5 +1,8 @@
 package com.teleus.service.base;
 
+import com.teleus.common.util.page.PageQuery;
+import com.teleus.common.util.page.PageResult;
+
 public interface BaseService<T> {
 	
 	public T getById(Long id);
@@ -17,4 +20,6 @@ public interface BaseService<T> {
 	public Boolean deleteById(String id);
 
 	public Boolean add(T record);
+
+	PageResult<T> getPageList(PageQuery pageQuery);
 }

@@ -134,7 +134,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);
-        addGetByPageMethodImpl(topLevelClass,implType,modelType,mapperType);
+//        addGetByPageMethodImpl(topLevelClass,implType,modelType,mapperType);
 
         //add imports
         Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
@@ -149,10 +149,10 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(baseMapperType);
         fullyQualifiedJavaTypes.add(loggerType);
         fullyQualifiedJavaTypes.add(loggerFactoryType);
-        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
-        fullyQualifiedJavaTypes.add(pageQueryType);
-        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT);
-        fullyQualifiedJavaTypes.add(pageResultType);
+//        FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
+//        fullyQualifiedJavaTypes.add(pageQueryType);
+//        FullyQualifiedJavaType pageResultType = new FullyQualifiedJavaType(Commons.NAME_PAGE_RESULT);
+//        fullyQualifiedJavaTypes.add(pageResultType);
         fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
 
@@ -185,7 +185,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 
-        addGetByPageMethod(interfaze,modelType);
+//        addGetByPageMethod(interfaze,modelType);
 
         return interfaze;
 	}

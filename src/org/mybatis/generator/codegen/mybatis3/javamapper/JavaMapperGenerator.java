@@ -132,8 +132,8 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 
-        addGetByPageMethod(interfaze,type,baseRecordType);
-        addGetByPageCountMethod(interfaze);
+//        addGetByPageMethod(interfaze,type,baseRecordType);
+//        addGetByPageCountMethod(interfaze);
 
 		return interfaze;
 	}

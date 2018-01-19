@@ -1,0 +1,101 @@
+/**
+ * Created by zhour on 2016/11/28.
+ */
+common.service('teleApi', function ($http,API_HOST) {
+    return {
+        //#firstLowCaseModelName
+        //okCallback()
+        add#firstUpperCaseModelName: function(#AllFieldExceptIdWithSpit, memo,okCallback,failCallback,errorCallback) {
+            var data = #addAndUpdateParamsJson;
+            $http({
+                method: "post",
+                url: API_HOST + '/api/v2/teleService/#firstLowCaseModelName',
+                data:data
+            }).success(function (data) {
+                if (data.status == 1){
+                    okCallback();
+                }else{
+                    failCallback(data.status,data.msg);
+                }
+            }).error(function (error) {
+                errorCallback(error);
+            });
+        },
+
+        //okCallback()
+        update#firstUpperCaseModelName: function(id,#AllFieldExceptIdWithSpit,okCallback,failCallback,errorCallback) {
+            var data = #addAndUpdateParamsJson;
+            $http({
+                method: "post",
+                url: API_HOST + '/api/v2/teleService/#firstLowCaseModelName/'+id,
+                data:data
+            }).success(function (data) {
+                if (data.status == 1){
+                    okCallback();
+                }else{
+                    failCallback(data.status,data.msg);
+                }
+            }).error(function (error) {
+                errorCallback(error);
+            });
+
+        },
+
+        //okCallback(id,#AllFieldExceptIdWithSpit)
+        get#firstUpperCaseModelNameById: function(id,okCallback,failCallback,errorCallback) {
+            $http({
+                method: "get",
+                url: API_HOST + "/api/v2/teleService/#firstLowCaseModelName/"+id
+            }).success(function (data) {
+                if (data.status == 1){
+                    var #firstLowCaseModelName = data.data;
+                    okCallback(#firstLowCaseModelName.id,#FieldExceptIdWithSpitAndModelPre);
+                }else{
+                    failCallback(data.status,data.msg);
+                }
+            }).error(function (error) {
+                errorCallback(error);
+            });
+        },
+
+        //okCallback()
+        delete#firstUpperCaseModelNameById: function(id,okCallback,failCallback,errorCallback) {
+            $http({
+                method: "delete",
+                url: API_HOST + "/api/v2/teleService/#firstLowCaseModelName/"+id
+            }).success(function (data) {
+                if (data.status == 1){
+                    okCallback();
+                }else{
+                    failCallback(data.status,data.msg);
+                }
+            }).error(function (error) {
+                errorCallback(error);
+            });
+        },
+
+        //okCallback(items,pageIndex,totalPage,limit);
+        //items:id,#AllFieldExceptIdWithSpit
+        get#firstUpperCaseModelNamesByPage: function (pageIndex,type,name,okCallback,failCallback,errorCallback) {
+            var json = {
+                pageIndex : pageIndex,
+                type:type,
+                name : name
+            };
+            $http({
+                method: "post",
+                url: API_HOST + "/api/v2/teleService/#firstLowCaseModelNames",
+                data:json
+            }).success(function (data) {
+                if (data.status == 1){
+                    okCallback(data.data.items,data.data.pageIndex,data.data.totalPage,data.data.limit);
+                }else{
+                    failCallback(data.status,data.msg);
+                }
+            }).error(function (error) {
+                errorCallback(error);
+            });
+        }
+
+    };
+});

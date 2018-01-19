@@ -201,7 +201,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addAnnotation("@RequestMapping(value=\"/"+lowModelShortName+"/{id}\", method= RequestMethod.DELETE)");
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".deleteById(id);"); //$NON-NLS-1$
-        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("if (resultBoolean) {return Root.getRootOKAndSimpleMsg().toJsonString();}"); //$NON-NLS-1$
         method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
@@ -236,7 +236,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".add("+lowModelShortName+");"); //$NON-NLS-1$
-        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("if (resultBoolean) {return Root.getRootOKAndSimpleMsg().toJsonString();}"); //$NON-NLS-1$
         method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
@@ -309,7 +309,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
 
         method.addBodyLine("boolean resultBoolean = "
                 + StringUtility.lowFirstString(serviceType.getShortName()) +".update("+lowModelShortName+");"); //$NON-NLS-1$
-        method.addBodyLine("if (resultBoolean) return Root.getRootOKAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
+        method.addBodyLine("if (resultBoolean) {return Root.getRootOKAndSimpleMsg().toJsonString();}"); //$NON-NLS-1$
         method.addBodyLine("return Root.getRootFailAndSimpleMsg().toJsonString();"); //$NON-NLS-1$
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
@@ -361,7 +361,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         method.addBodyLine("if (pageIndex != null){");
         method.addBodyLine("pageQuery.setPageIndex(pageIndex);");
         method.addBodyLine("}");
-        method.addBodyLine("PageResult<"+modelType.getShortName()+"> pageResult = "+ StringUtility.lowFirstString(serviceType.getShortName())+".get"+modelType.getShortName()+"sByPage(pageQuery);" );
+        method.addBodyLine("PageResult<"+modelType.getShortName()+"> pageResult = "+ StringUtility.lowFirstString(serviceType.getShortName())+".getPageList(pageQuery);" );
         method.addBodyLine("return Root.getRootOKAndSimpleMsg().setData(pageResult).toJsonString();"); //$NON-NLS-1$
         topLevelClass.addMethod(method);
     }

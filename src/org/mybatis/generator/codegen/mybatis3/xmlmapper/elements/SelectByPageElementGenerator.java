@@ -34,7 +34,7 @@ public class SelectByPageElementGenerator extends
 
         sb.append("     where 1=1 \n");
         sb.append("     order by t.id desc \n");
-        sb.append("     LIMIT #{pageQuery.limit} OFFSET #{pageQuery.pageOffset}");
+        sb.append("     LIMIT #{limit} OFFSET #{pageOffset}");
         answer.addElement(new TextElement(sb.toString()));
         parentElement.addElement(answer);
     }

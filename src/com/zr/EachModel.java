@@ -19,7 +19,7 @@ public class EachModel {
         this.modelName = modelName;
     }
 
-    private boolean isFourFileds(String field){
+    private boolean isNoUseFileds(String field){
         if (field.toLowerCase().equals("creationtime")){
             return true;
         }
@@ -33,6 +33,9 @@ public class EachModel {
             return true;
         }
         if (field.toLowerCase().equals("updatedby")){
+            return true;
+        }
+        if (field.toLowerCase().equals("flag")){
             return true;
         }
         return false;
@@ -165,10 +168,41 @@ public class EachModel {
         File jsTargetFile = new File(jsDirectory, getModelName()+".js");
 
         writeFile(jsTargetFile, jsTemplate,"utf-8");
+
+
+
+        //API生成
+        InputStream apiTmp = GenerCode.class.getClassLoader().getResourceAsStream("org/template/AngularAPI");
+        String apiTmplate = new String(StreamUtils.getBytes(apiTmp));
+
+        apiTmplate = apiTmplate.replaceAll("#firstLowCaseModelName",getModelName());
+        StringBuilder AllFieldExceptIdWithSpit = new StringBuilder();
+        StringBuilder AllFieldExceptIdWithSpitAndModelPre = new StringBuilder();
+        StringBuilder addAndUpdateParamsJson = new StringBuilder("{");
+        if (getFileds().size() > 2){
+            for (String field : getFileds()){
+                if (!"id".equals(field)){
+                    AllFieldExceptIdWithSpit.append(field+",");
+                    AllFieldExceptIdWithSpitAndModelPre.append(getModelName()+"."+field+",");
+                    addAndUpdateParamsJson.append(field+":"+field+", ");
+                }
+            }
+            addAndUpdateParamsJson = addAndUpdateParamsJson.deleteCharAt(addAndUpdateParamsJson.length()-1);
+            addAndUpdateParamsJson = addAndUpdateParamsJson.deleteCharAt(addAndUpdateParamsJson.length()-1);
+            addAndUpdateParamsJson.append("}");
+            apiTmplate = apiTmplate.replaceAll("#AllFieldExceptIdWithSpit",AllFieldExceptIdWithSpit.deleteCharAt(AllFieldExceptIdWithSpit.length()-1).toString());
+            apiTmplate = apiTmplate.replaceAll("#FieldExceptIdWithSpitAndModelPre",AllFieldExceptIdWithSpitAndModelPre.deleteCharAt(AllFieldExceptIdWithSpitAndModelPre.length()-1).toString());
+            apiTmplate = apiTmplate.replaceAll("#firstUpperCaseModelName", firstUpperModel);
+            apiTmplate = apiTmplate.replaceAll("#addAndUpdateParamsJson", addAndUpdateParamsJson.toString());
+            //输出API
+            File apiTargetFile = new File(jsDirectory, getModelName()+"-api.js");
+            writeFile(apiTargetFile, apiTmplate,"utf-8");
+        }
+
     }
 
     public void addFiled(String filed) {
-        if (!isFourFileds(filed)){
+        if (!isNoUseFileds(filed)){
             fileds.add(filed);
         }
     }
