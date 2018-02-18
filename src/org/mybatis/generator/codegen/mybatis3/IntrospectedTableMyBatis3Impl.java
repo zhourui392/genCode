@@ -26,9 +26,7 @@ import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
 import org.mybatis.generator.codegen.AbstractJavaGenerator;
 import org.mybatis.generator.codegen.AbstractXmlGenerator;
 import org.mybatis.generator.codegen.mybatis3.controller.JavaControllerGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.AnnotatedClientGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.JavaMapperGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.MixedClientGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.BaseRecordGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.ExampleGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.PrimaryKeyGenerator;
@@ -129,12 +127,6 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
 
         AbstractJavaClientGenerator javaGenerator;
         if ("XMLMAPPER".equalsIgnoreCase(type)) { //$NON-NLS-1$
-            javaGenerator = new JavaMapperGenerator();
-        } else if ("MIXEDMAPPER".equalsIgnoreCase(type)) { //$NON-NLS-1$
-            javaGenerator = new MixedClientGenerator();
-        } else if ("ANNOTATEDMAPPER".equalsIgnoreCase(type)) { //$NON-NLS-1$
-            javaGenerator = new AnnotatedClientGenerator();
-        } else if ("MAPPER".equalsIgnoreCase(type)) { //$NON-NLS-1$
             javaGenerator = new JavaMapperGenerator();
         } else {
             javaGenerator = (AbstractJavaClientGenerator) ObjectFactory

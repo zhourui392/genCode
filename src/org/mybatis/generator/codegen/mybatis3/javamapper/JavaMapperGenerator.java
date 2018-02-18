@@ -77,18 +77,6 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
 
         List<CompilationUnit> answer = new ArrayList<>();
 
-//		Interface interfaze2 = interfacebase(commentGenerator, myBatis3JavaMapperType);
-//
-//        if (context.getPlugins().clientGenerated(interfaze2, null,
-//                introspectedTable)) {
-//            answer.add(interfaze2);
-//        }
-//
-//        List<CompilationUnit> extraCompilationUnits2 = getExtraCompilationUnits();
-//        if (extraCompilationUnits2 != null) {
-//            answer.addAll(extraCompilationUnits2);
-//        }
-
         Interface interfaze = interfaceout(commentGenerator,
                 myBatis3JavaMapperType, baseRecordType);
 
@@ -123,17 +111,10 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             interfaze.addSuperInterface(fqjt);
             Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
             fullyQualifiedJavaTypes.add(fqjt);
-//            FullyQualifiedJavaType pageQueryType = new FullyQualifiedJavaType(Commons.NAME_PAGE_QUERY);
-//            fullyQualifiedJavaTypes.add(pageQueryType);
             fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
-//            FullyQualifiedJavaType paramType = new FullyQualifiedJavaType(Param.class.getName());
-//            fullyQualifiedJavaTypes.add(paramType);
             fullyQualifiedJavaTypes.add(baseRecordType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
-
-//        addGetByPageMethod(interfaze,type,baseRecordType);
-//        addGetByPageCountMethod(interfaze);
 
 		return interfaze;
 	}
