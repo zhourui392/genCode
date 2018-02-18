@@ -25,29 +25,21 @@ import java.util.List;
 import java.util.Set;
 
 import com.zr.Commons;
-import org.apache.ibatis.annotations.Param;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.codegen.AbstractJavaClientGenerator;
 import org.mybatis.generator.codegen.AbstractXmlGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.AbstractJavaMapperMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.CountByExampleMethodGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.DeleteByExampleMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.DeleteByPrimaryKeyMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.InsertMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.InsertSelectiveMethodGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.SelectByExampleWithBLOBsMethodGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.SelectByExampleWithoutBLOBsMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.SelectByPrimaryKeyMethodGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByExampleSelectiveMethodGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByExampleWithBLOBsMethodGenerator;
-import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByExampleWithoutBLOBsMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByPrimaryKeySelectiveMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByPrimaryKeyWithBLOBsMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.javamapper.elements.UpdateByPrimaryKeyWithoutBLOBsMethodGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.XMLMapperGenerator;
 import org.mybatis.generator.config.PropertyRegistry;
-import org.mybatis.generator.internal.util.StringUtility;
 
 /**
  * @author Jeff Butler
@@ -76,6 +68,18 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         String baseRecordType = introspectedTable.getBaseRecordType();
 
         List<CompilationUnit> answer = new ArrayList<>();
+
+//		Interface interfaze2 = interfacebase(commentGenerator, myBatis3JavaMapperType);
+//
+//        if (context.getPlugins().clientGenerated(interfaze2, null,
+//                introspectedTable)) {
+//            answer.add(interfaze2);
+//        }
+//
+//        List<CompilationUnit> extraCompilationUnits2 = getExtraCompilationUnits();
+//        if (extraCompilationUnits2 != null) {
+//            answer.addAll(extraCompilationUnits2);
+//        }
 
         Interface interfaze = interfaceout(commentGenerator,
                 myBatis3JavaMapperType, baseRecordType);
@@ -116,6 +120,7 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 
+
 		return interfaze;
 	}
 
@@ -147,16 +152,10 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         }
         
         addCountByExampleMethod(interfaze);
-        addDeleteByExampleMethod(interfaze);
         addDeleteByPrimaryKeyMethod(interfaze);
         addInsertMethod(interfaze);
         addInsertSelectiveMethod(interfaze);
-        addSelectByExampleWithBLOBsMethod(interfaze);
-        addSelectByExampleWithoutBLOBsMethod(interfaze);
         addSelectByPrimaryKeyMethod(interfaze);
-        addUpdateByExampleSelectiveMethod(interfaze);
-        addUpdateByExampleWithBLOBsMethod(interfaze);
-        addUpdateByExampleWithoutBLOBsMethod(interfaze);
         addUpdateByPrimaryKeySelectiveMethod(interfaze);
         addUpdateByPrimaryKeyWithBLOBsMethod(interfaze);
         addUpdateByPrimaryKeyWithoutBLOBsMethod(interfaze);
@@ -192,13 +191,6 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         }
     }
 
-    protected void addDeleteByExampleMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateDeleteByExample()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new DeleteByExampleMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
     protected void addDeleteByPrimaryKeyMethod(Interface interfaze) {
         if (introspectedTable.getRules().generateDeleteByPrimaryKey()) {
             AbstractJavaMapperMethodGenerator methodGenerator = new DeleteByPrimaryKeyMethodGenerator(false);
@@ -220,44 +212,9 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
         }
     }
 
-    protected void addSelectByExampleWithBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateSelectByExampleWithBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new SelectByExampleWithBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addSelectByExampleWithoutBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateSelectByExampleWithoutBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new SelectByExampleWithoutBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
     protected void addSelectByPrimaryKeyMethod(Interface interfaze) {
         if (introspectedTable.getRules().generateSelectByPrimaryKey()) {
             AbstractJavaMapperMethodGenerator methodGenerator = new SelectByPrimaryKeyMethodGenerator(false);
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByExampleSelectiveMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByExampleSelective()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByExampleSelectiveMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByExampleWithBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByExampleWithBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByExampleWithBLOBsMethodGenerator();
-            initializeAndExecuteGenerator(methodGenerator, interfaze);
-        }
-    }
-
-    protected void addUpdateByExampleWithoutBLOBsMethod(Interface interfaze) {
-        if (introspectedTable.getRules().generateUpdateByExampleWithoutBLOBs()) {
-            AbstractJavaMapperMethodGenerator methodGenerator = new UpdateByExampleWithoutBLOBsMethodGenerator();
             initializeAndExecuteGenerator(methodGenerator, interfaze);
         }
     }
