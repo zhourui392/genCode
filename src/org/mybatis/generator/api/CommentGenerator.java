@@ -58,30 +58,30 @@ public interface CommentGenerator {
      * @param introspectedColumn
      */
     public void addFieldComment(Field field,
-            IntrospectedTable introspectedTable,
-            IntrospectedColumn introspectedColumn);
+                                IntrospectedTable introspectedTable,
+                                IntrospectedColumn introspectedColumn);
 
     public void addFieldComment(Field field, IntrospectedTable introspectedTable);
 
     public void addClassComment(InnerClass innerClass,
-            IntrospectedTable introspectedTable);
+                                IntrospectedTable introspectedTable);
 
     public void addClassComment(InnerClass innerClass,
-            IntrospectedTable introspectedTable, boolean markAsDoNotDelete);
+                                IntrospectedTable introspectedTable, boolean markAsDoNotDelete);
 
     public void addEnumComment(InnerEnum innerEnum,
-            IntrospectedTable introspectedTable);
+                               IntrospectedTable introspectedTable);
 
     public void addGetterComment(Method method,
-            IntrospectedTable introspectedTable,
-            IntrospectedColumn introspectedColumn);
+                                 IntrospectedTable introspectedTable,
+                                 IntrospectedColumn introspectedColumn);
 
     public void addSetterComment(Method method,
-            IntrospectedTable introspectedTable,
-            IntrospectedColumn introspectedColumn);
+                                 IntrospectedTable introspectedTable,
+                                 IntrospectedColumn introspectedColumn);
 
     public void addGeneralMethodComment(Method method,
-            IntrospectedTable introspectedTable);
+                                        IntrospectedTable introspectedTable);
 
     /**
      * This method is called to add a file level comment to a generated java

@@ -187,7 +187,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable);
+                            IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the countByExample method has been generated
@@ -208,7 +208,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientCountByExampleMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the deleteByExample method has been generated
@@ -229,7 +229,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientDeleteByExampleMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                 TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the deleteByPrimaryKey method has been
@@ -250,7 +250,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientDeleteByPrimaryKeyMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                    TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the insert method has been generated in the
@@ -271,7 +271,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientInsertMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                        TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the insert selective method has been generated
@@ -292,7 +292,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientInsertSelectiveMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                 TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByExampleWithBLOBs method has been
@@ -313,7 +313,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                          TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByExampleWithoutBLOBs method has
@@ -334,7 +334,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                             TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByPrimaryKey method has been
@@ -355,7 +355,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectByPrimaryKeyMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                    TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleSelective method has been
@@ -376,7 +376,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByExampleSelectiveMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                          TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithBLOBs method has been
@@ -397,7 +397,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                          TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithoutBLOBs method has
@@ -418,7 +418,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                             TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByPrimaryKeySelective method has
@@ -439,7 +439,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                             TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByPrimaryKeyWithBLOBs method has
@@ -460,7 +460,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                             TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByPrimaryKeyWithoutBLOBs method has
@@ -481,7 +481,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                                TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the countByExample method has been generated
@@ -502,7 +502,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientCountByExampleMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the deleteByExample method has been generated
@@ -523,7 +523,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientDeleteByExampleMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                 Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the deleteByPrimaryKey method has been
@@ -544,7 +544,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientDeleteByPrimaryKeyMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                    Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the insert method has been generated in the
@@ -565,7 +565,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientInsertMethodGenerated(Method method, Interface interfaze,
-            IntrospectedTable introspectedTable);
+                                        IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the insert selective method has been generated
@@ -586,7 +586,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientInsertSelectiveMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                 Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectAll method has been
@@ -608,7 +608,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectAllMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                           Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectAll method has been
@@ -629,7 +629,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectAllMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                           TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
     
     /**
      * This method is called when the selectByExampleWithBLOBs method has been
@@ -650,7 +650,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectByExampleWithBLOBsMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                          Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByExampleWithoutBLOBs method has
@@ -671,7 +671,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectByExampleWithoutBLOBsMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                             Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByPrimaryKey method has been
@@ -692,7 +692,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientSelectByPrimaryKeyMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                    Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleSelective method has been
@@ -713,7 +713,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByExampleSelectiveMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                          Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithBLOBs method has been
@@ -734,7 +734,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByExampleWithBLOBsMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                          Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithoutBLOBs method has
@@ -755,7 +755,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByExampleWithoutBLOBsMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                             Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByPrimaryKeySelective method has
@@ -776,7 +776,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByPrimaryKeySelectiveMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                             Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByPrimaryKeyWithBLOBs method has
@@ -797,7 +797,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByPrimaryKeyWithBLOBsMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                             Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByPrimaryKeyWithoutBLOBs method has
@@ -818,7 +818,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean clientUpdateByPrimaryKeyWithoutBLOBsMethodGenerated(Method method,
-            Interface interfaze, IntrospectedTable introspectedTable);
+                                                                Interface interfaze, IntrospectedTable introspectedTable);
 
     /**
      * This method is called after the field is generated for a specific column
@@ -843,8 +843,8 @@ public interface Plugin {
      *         plugins.
      */
     boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass,
-            IntrospectedColumn introspectedColumn,
-            IntrospectedTable introspectedTable, ModelClassType modelClassType);
+                                IntrospectedColumn introspectedColumn,
+                                IntrospectedTable introspectedTable, ModelClassType modelClassType);
 
     /**
      * This method is called after the getter, or accessor, method is generated
@@ -870,8 +870,8 @@ public interface Plugin {
      *         plugins.
      */
     boolean modelGetterMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
-            IntrospectedTable introspectedTable, ModelClassType modelClassType);
+                                       TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
+                                       IntrospectedTable introspectedTable, ModelClassType modelClassType);
 
     /**
      * This method is called after the setter, or mutator, method is generated
@@ -897,8 +897,8 @@ public interface Plugin {
      *         plugins.
      */
     boolean modelSetterMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
-            IntrospectedTable introspectedTable, ModelClassType modelClassType);
+                                       TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn,
+                                       IntrospectedTable introspectedTable, ModelClassType modelClassType);
 
     /**
      * This method is called after the primary key class is generated by the
@@ -920,7 +920,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable);
+                                          IntrospectedTable introspectedTable);
 
     /**
      * This method is called after the base record class is generated by the
@@ -942,7 +942,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable);
+                                          IntrospectedTable introspectedTable);
 
     /**
      * This method is called after the record with BLOBs class is generated by
@@ -964,7 +964,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean modelRecordWithBLOBsClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable);
+                                               IntrospectedTable introspectedTable);
 
     /**
      * This method is called after the example class is generated by the 
@@ -986,7 +986,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable);
+                                       IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the SqlMap file has been generated.
@@ -1003,7 +1003,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapGenerated(GeneratedXmlFile sqlMap,
-            IntrospectedTable introspectedTable);
+                            IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the SqlMap document has been generated. This
@@ -1023,7 +1023,7 @@ public interface Plugin {
      *         <tt>sqlMapGenerated</tt> method will not be called.
      */
     boolean sqlMapDocumentGenerated(Document document,
-            IntrospectedTable introspectedTable);
+                                    IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the base resultMap is generated.
@@ -1039,7 +1039,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapResultMapWithoutBLOBsElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                        IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the countByExample element is generated.
@@ -1055,7 +1055,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapCountByExampleElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                 IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the deleteByExample element is generated.
@@ -1071,7 +1071,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapDeleteByExampleElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                  IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the deleteByPrimaryKey element is generated.
@@ -1087,7 +1087,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapDeleteByPrimaryKeyElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                     IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the exampleWhereClause element is generated.
@@ -1103,7 +1103,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapExampleWhereClauseElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                     IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the baseColumnList element is generated.
@@ -1119,7 +1119,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapBaseColumnListElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                 IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the blobColumnList element is generated.
@@ -1135,7 +1135,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapBlobColumnListElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                 IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the insert element is generated.
@@ -1151,7 +1151,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapInsertElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                         IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the insert selective element is generated.
@@ -1167,7 +1167,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapInsertSelectiveElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                  IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the resultMap with BLOBs element is generated
@@ -1184,7 +1184,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapResultMapWithBLOBsElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                     IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectAll element is generated.
@@ -1200,7 +1200,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapSelectAllElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                            IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByPrimaryKey element is generated.
@@ -1216,7 +1216,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapSelectByPrimaryKeyElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                     IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByExample element is generated.
@@ -1249,7 +1249,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                           IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleSelective element is
@@ -1266,7 +1266,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapUpdateByExampleSelectiveElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                           IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithBLOBs element is
@@ -1283,7 +1283,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean sqlMapUpdateByExampleWithBLOBsElementGenerated(XmlElement element,
-            IntrospectedTable introspectedTable);
+                                                           IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithourBLOBs element is
@@ -1369,7 +1369,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable);
+                              IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the applyWhere method has
@@ -1390,7 +1390,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerApplyWhereMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                              TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the countByExample method has
@@ -1411,7 +1411,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerCountByExampleMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                  TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the deleteByExample method has
@@ -1432,7 +1432,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerDeleteByExampleMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                   TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the insertSelective method has
@@ -1453,7 +1453,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerInsertSelectiveMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                   TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByExampleWithBLOBs method has
@@ -1474,7 +1474,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerSelectByExampleWithBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the selectByExampleWithoutBLOBs method has
@@ -1495,7 +1495,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerSelectByExampleWithoutBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                               TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleSelective method has
@@ -1516,7 +1516,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerUpdateByExampleSelectiveMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithBLOBs method has
@@ -1537,7 +1537,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerUpdateByExampleWithBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByExampleWithoutBLOBs method has
@@ -1558,7 +1558,7 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerUpdateByExampleWithoutBLOBsMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                               TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the updateByPrimaryKeySelective method has
@@ -1579,5 +1579,5 @@ public interface Plugin {
      *         plugins.
      */
     boolean providerUpdateByPrimaryKeySelectiveMethodGenerated(Method method,
-            TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
+                                                               TopLevelClass topLevelClass, IntrospectedTable introspectedTable);
 }

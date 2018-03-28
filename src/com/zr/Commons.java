@@ -1,12 +1,12 @@
 package com.zr;
 
 import cn.teleus.mas.controller.BaseController;
-import com.teleus.common.util.Root;
-import com.teleus.common.util.page.PageQuery;
-import com.teleus.common.util.page.PageResult;
-import com.teleus.mapper.base.BaseMapper;
-import com.teleus.service.base.BaseService;
-import com.teleus.service.base.impl.BaseServiceImpl;
+import cn.teleus.common.util.Root;
+import cn.teleus.common.util.page.PageQuery;
+import cn.teleus.common.util.page.PageResult;
+import cn.teleus.mapper.base.BaseMapper;
+import cn.teleus.service.base.BaseService;
+import cn.teleus.service.base.impl.BaseServiceImpl;
 
 /**
  * Created by zhourui on 2017/2/16.

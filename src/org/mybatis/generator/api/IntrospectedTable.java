@@ -108,7 +108,7 @@ public abstract class IntrospectedTable {
      * Internal attributes are used to store commonly accessed items by all code
      * generators
      */
-    protected Map<IntrospectedTable.InternalAttribute, String> internalAttributes;
+    protected Map<InternalAttribute, String> internalAttributes;
 
     public IntrospectedTable(TargetRuntime targetRuntime) {
         super();
@@ -117,7 +117,7 @@ public abstract class IntrospectedTable {
         baseColumns = new ArrayList<IntrospectedColumn>();
         blobColumns = new ArrayList<IntrospectedColumn>();
         attributes = new HashMap<String, Object>();
-        internalAttributes = new HashMap<IntrospectedTable.InternalAttribute, String>();
+        internalAttributes = new HashMap<InternalAttribute, String>();
     }
 
     public FullyQualifiedTable getFullyQualifiedTable() {

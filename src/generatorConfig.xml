@@ -9,16 +9,16 @@
 	<classPathEntry location="D:/workspace/GenCode2/WebRoot/WEB-INF/lib/mysql-connector-java-5.1.18.jar" />
 -->
 	<!---->
-	
+
 	<!--<classPathEntry location="D:/workspace/GenCode2/WebRoot/WEB-INF/lib/postgresql-9.3-1101-jdbc41.jar" />-->
 
-	
+
 	<context id="DB2Tables" targetRuntime="MyBatis3">
 		<commentGenerator>
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
-		<!-- 数据库链接URL、用户名、密码 
-		
+		<!-- 数据库链接URL、用户名、密码
+
 		<jdbcConnection driverClass="net.sourceforge.jtds.jdbc.Driver" connectionURL="jdbc:jtds:sqlserver://127.0.0.1:1433/huilongguan" userId="sa" password="135246">
 		</jdbcConnection>-->
 		<!--
@@ -56,7 +56,7 @@
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!-- 要生成那些表(更改tableName和domainObjectName就可以)
-			
+
 		-->
 
 		<table tableName="t_user" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
