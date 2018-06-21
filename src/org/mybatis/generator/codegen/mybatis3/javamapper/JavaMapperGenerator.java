@@ -115,11 +115,12 @@ public class JavaMapperGenerator extends AbstractJavaClientGenerator {
             interfaze.addSuperInterface(fqjt);
             Set<FullyQualifiedJavaType> fullyQualifiedJavaTypes = new HashSet<>();
             fullyQualifiedJavaTypes.add(fqjt);
-            fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
+//            fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
             fullyQualifiedJavaTypes.add(baseRecordType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
 
+        new MapperJavaDoc().getAll(interfaze);
 
 		return interfaze;
 	}
