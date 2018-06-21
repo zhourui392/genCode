@@ -156,6 +156,8 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
         fullyQualifiedJavaTypes.add(FullyQualifiedJavaType.getNewListInstance());
         topLevelClass.addImportedTypes(fullyQualifiedJavaTypes);
 
+        new ServiceJavaDoc().getAll(topLevelClass);
+
         return topLevelClass;
     }
 
@@ -184,6 +186,7 @@ public class JavaServiceGenerator extends AbstractJavaGenerator {
 //            fullyQualifiedJavaTypes.add(pageResultType);
             interfaze.addImportedTypes(fullyQualifiedJavaTypes);
         }
+        new ServiceJavaDoc().getAll(interfaze);
 
 //        addGetByPageMethod(interfaze,modelType);
 
