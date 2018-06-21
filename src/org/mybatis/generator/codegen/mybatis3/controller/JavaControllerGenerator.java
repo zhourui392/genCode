@@ -119,6 +119,7 @@ public class JavaControllerGenerator extends AbstractJavaGenerator {
         serviceFiled.addAnnotation("@Resource");
         topLevelClass.addField(serviceFiled);
 
+        new ControllerJavaDoc().getAll(topLevelClass);
 
         topLevelClass.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(topLevelClass);
